@@ -1,0 +1,13 @@
+#!/bin/bash
+while [ ! -e /dev/rfcomm1 ]; do
+    sleep 1
+done
+sleep 2
+sudo service ntp start
+
+sleep 2
+/usr/sbin/gpsd -nG /dev/rfcomm1 
+
+sleep 10
+/home/pi/start-nodejs &
+

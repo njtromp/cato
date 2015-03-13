@@ -1,0 +1,4 @@
+#!/bin/bash
+cd /home/pi
+/usr/local/bin/node /home/pi/cato.js > /tmp/node.log 2>&1
+
