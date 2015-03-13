@@ -3,6 +3,6 @@
  * all the modules and start them.
  */
 
-var correctClock = require('./correctClock.js');
+var correctClock = require('./correct-clock.js');
 // Start the correcting the clock
 correctClock.start();
