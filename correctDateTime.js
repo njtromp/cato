@@ -2,7 +2,7 @@ var gpsd = require('node-gpsd');
 var sys = require('sys');
 var execSync = require('child_process').execSync;
 
-function readRawNMEA() {
+exports.correctClock :function () {
 	var listener = new gpsd.Listener({
 	    port: 2947,
 	    hostname: 'localhost',
@@ -60,5 +60,3 @@ function readRawNMEA() {
 
 	listener.watch({class: 'WATCH', nmea: true});
 }
-
-readRawNMEA(); 
