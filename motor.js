@@ -1,17 +1,21 @@
+"use strict";
+
 var I2C = require("i2c");
  
 var constants = {
     modeRegister1: 0x00, // MODE1
-    modeRegister1Default: 0x01,
-    channel0OnStepLowByte: 0x06, // LED0_ON_L
-    channel0OnStepHighByte: 0x07, // LED0_ON_H
-    channel0OffStepLowByte: 0x08, // LED0_OFF_L
-    channel0OffStepHighByte: 0x09, // LED0_OFF_H
-    registersPerChannel: 4,
-    allChannelsOnStepLowByte: 0xFA, // ALL_LED_ON_L
-    allChannelsOnStepHighByte: 0xFB, // ALL_LED_ON_H
-    allChannelsOffStepLowByte: 0xFC, // ALL_LED_OFF_L
-    allChannelsOffStepHighByte: 0xFD, // ALL_LED_OFF_H
+    modeRegister1Default: 0x01, // 0x01 respond to led-all commands
+    motorOnStepLowByte: 0x06, // LED0_ON_L
+    motorOnStepHighByte: 0x07, // LED0_ON_H
+    motorOffStepLowByte: 0x08, // LED0_OFF_L
+    motorOffStepHighByte: 0x09, // LED0_OFF_H
+    registersPerMotor: 4,
+    allMotorsOnStepLowByte: 0xFA, // ALL_LED_ON_L
+    allMotorsOnStepHighByte: 0xFB, // ALL_LED_ON_H
+    allMotorsOffStepLowByte: 0xFC, // ALL_LED_OFF_L
+    allMotorsOffStepHighByte: 0xFD, // ALL_LED_OFF_H
+    sleepBit: 0x10,
+    restartBit: 0x80,
     preScale: 0xFE, // PRE_SCALE
     stepsPerCycle: 4096
 };
@@ -36,12 +40,12 @@ function PWM(options, cb) {
     this._send = this._send.bind(this);
 
     this._send(constants.modeRegister1, constants.modeRegister1Default);
-    this.allChannelsOff();
+    this.allMotorsOff();
 
     this._setFrequency(this.frequency, cb);
 }
 
-PWM.prototype._send = function sendCommand(cmd, values) {
+PWM.prototype._send = function(cmd, values) {
     if (!Array.isArray(values)) {
         values = [values];
     }
@@ -53,7 +57,7 @@ PWM.prototype._send = function sendCommand(cmd, values) {
     });
 };
 
-PWM.prototype._setFrequency = function setPwmFrequency(freq, cb) {
+PWM.prototype._setFrequency = function(freq, cb) {
     // 25MHz base clock, 12 bit (4096 steps per cycle)
     var prescale = Math.round(25000000 / (constants.stepsPerCycle * freq)) - 1;
 
@@ -63,31 +67,6 @@ PWM.prototype._setFrequency = function setPwmFrequency(freq, cb) {
     }
 
     this.i2c.readBytes(constants.modeRegister1, 1, createSetFrequencyStep2(this._send, this.debug, prescale, cb));
-};
-
-PWM.prototype.setPulseRange = function setPwmRange(channel, onStep, offStep) {
-    if (this.debug) {
-        console.log("Setting PWM channel, channel:", channel, "onStep:", onStep, "offStep:", offStep);
-    }
-
-    this._send(constants.channel0OnStepLowByte + constants.registersPerChannel * channel, onStep & 0xFF);
-    this._send(constants.channel0OnStepHighByte + constants.registersPerChannel * channel, (onStep >> 8) & 0x0F);
-    this._send(constants.channel0OffStepLowByte + constants.registersPerChannel * channel, offStep & 0xFF);
-    this._send(constants.channel0OffStepHighByte + constants.registersPerChannel * channel, (offStep >> 8) & 0x0F);
-};
- 
-PWM.prototype.allChannelsOff = function startAllMotors() {
-    this._send(constants.allChannelsOnStepLowByte, 0x00);
-    this._send(constants.allChannelsOnStepHighByte, 0x00);
-    this._send(constants.allChannelsOffStepLowByte, 0x00);
-    this._send(constants.allChannelsOffStepHighByte, 0x10);
-};
-
-PWM.prototype.allChannelsOn = function stopAllMotors() {
-    this._send(constants.allChannelsOnStepLowByte, 0x00);
-    this._send(constants.allChannelsOnStepHighByte, 0x10);
-    this._send(constants.allChannelsOffStepLowByte, 0x00);
-    this._send(constants.allChannelsOffStepHighByte, 0x00);
 };
 
 function createSetFrequencyStep2(sendFunc, debug, prescale, cb) {
@@ -126,19 +105,47 @@ function createSetFrequencyStep2(sendFunc, debug, prescale, cb) {
         }, 10);
     };
 }
+// The motor is allways turned on at the start of the cycle,
+// so specifying the off pulse is enough.
+PWM.prototype.setMotorPulseOff = function(motor, offStep) {
+    offStep &= 0x0FFF;
+    if (this.debug) {
+        console.log("Setting PWM Motor:", motor, "offStep:", offStep);
+    }
+    // Just to be on the safe side we set the on pulse as well
+    this._send(constants.motorOnStepLowByte + constants.registersPerMotor * motor, 0x00);
+    this._send(constants.motorOnStepHighByte + constants.registersPerMotor * motor, 0x00);
+    this._send(constants.motorOffStepLowByte + constants.registersPerMotor * motor, offStep & 0xFF);
+    this._send(constants.motorOffStepHighByte + constants.registersPerMotor * motor, (offStep >> 8) & 0x0F);
+};
+ 
+PWM.prototype.allMotorsOff = function() {
+    this._send(constants.allMotorsOnStepLowByte, 0x00);
+    this._send(constants.allMotorsOnStepHighByte, 0x00);
+    this._send(constants.allMotorsOffStepLowByte, 0x00);
+    this._send(constants.allMotorsOffStepHighByte, 0x10);
+};
+
+PWM.prototype.allMotorsOn = function() {
+    this._send(constants.allMotorsOnStepLowByte, 0x00);
+    this._send(constants.allMotorsOnStepHighByte, 0x10);
+    this._send(constants.allMotorsOffStepLowByte, 0x00);
+    this._send(constants.allMotorsOffStepHighByte, 0x00);
+};
+
 
 module.exports = PWM;
 
-pwm = new PWM(options, function() {
+var pwm = new PWM(options, function() {
     console.log("Initialization done");
-    main();
+    controlMotor();
 });
 
-function main() {
-    // Set channel 0 to turn on on st
-    // Set the duty cycle to 25% for channel 8 
-    console.log('About the turn the LED on...');
-    pwm.setPulseRange(0, 0, 4096);
+function controlMotor() {
+    // Set Motor 0 to turn on on st
+    // Set the duty cycle to 25% for Motor 0
+    console.log('About the turn the Motor on...');
+    pwm.setMotorPulseOff(0, 4095);
 
     var direction = -1;
     var brightness = 4095;
@@ -151,19 +158,20 @@ function main() {
             direction = -1;
             brightness = 4095;
         }
-        pwm.setPulseRange(0, 0, brightness);
+        pwm.setMotorPulseOff(0, brightness);
         setTimeout(dim, 10);    
     }
     dim();
+    pwm.allMotorsOff();
 
     setTimeout(function () {
-        pwm.allChannelsOn();
+        pwm.allMotorsOn();
         console.log('Switched on.');
         setTimeout(function() {
-            pwm.allChannelsOff();
+            pwm.allMotorsOff();
             console.log('Switched off.');
             setTimeout(function () {
-                pwm.setPulseRange(0, 0, 1024);
+                pwm.setMotorPulseOff(0, 1024);
                 console.log('Dimmed 25%.');
             }, 1000);
         }, 1000);
@@ -171,7 +179,7 @@ function main() {
 
     setTimeout(function() {
         console.log('Shutting down');
-        pwm.allChannelsOff();
+        pwm.allMotorsOff();
     }, 16000);
 
 }
