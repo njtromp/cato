@@ -140,15 +140,19 @@ function main() {
     console.log('About the turn the LED on...');
     pwm.setPulseRange(0, 0, 4096);
 
-    var brightness = 4096;
+    var direction = -1;
+    var brightness = 4095;
     function dim() {
-        if (brightness > 0) {
-            brightness = Math.max(0, brightness - 100);
-            pwm.setPulseRange(0, 0, brightness);
-            setTimeout(dim, 200);    
-        } else {
-            console.log('Dimmed');
+        brightness += direction * 100;
+        if (brightness < 0) {
+            direction = +1;
+            brightness = 0;
+        } else if (brightness > 4095) {
+            direction = -1;
+            brightness = 4095;
         }
+        pwm.setPulseRange(0, 0, brightness);
+        setTimeout(dim, 10);    
     }
     dim();
 
