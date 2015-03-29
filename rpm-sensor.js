@@ -17,8 +17,8 @@ module.exports = {
   					if (lastSwitch == null) {
   						lastSwitch = currentSwitch;
   					} else {
-  						var rps = 1000 / ((currentSwitch - lastSwitch) / 6)
-  						console.log("RPS = " + rps);
+  						var delta = (currentSwitch - lastSwitch)
+  						console.log("Delta = " + delta);
   						lastSwitch = currentSwitch;
   					}
   				}
