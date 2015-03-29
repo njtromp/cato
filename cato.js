@@ -10,3 +10,7 @@ correctClock.start();
 // Enable the shutdown button.
 var shutdown = require('./shutdown.js');
 shutdown.enableButton();
+
+// Enable the RPM sensor.
+var rpmSensor = require('./rpm-sensor.js');
+rpmSensor.enableSensor();

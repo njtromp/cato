@@ -7,26 +7,22 @@
  */
 module.exports = {
 	enableSensor: function() {
-		function toSeconds(nanoSecondsArray) {
-			return nanoSecondsArray[0] + nanoSecondsArray[1] / 1000000000;
-		}
 		console.log('Installing sensor listener.');
 		var lastSwitch = null;
 		var Gpio = require('onoff').Gpio,
   			button = new Gpio(22, 'in', 'both');
   			button.watch(function(err, value) {
   				if (value == 0) {
-  					var currentSwitch = process.hrtime();
+  					var currentSwitch = new Date();
   					if (lastSwitch == null) {
   						lastSwitch = currentSwitch;
   					} else {
-  						var rps = 1000000000 / ((toSeconds(currentSwitch) - toSeconds(lastSwitch)) / 6)
+  						var rps = 1000 / ((currentSwitch - lastSwitch) / 6)
   						console.log("RPS = " + rps);
   						lastSwitch = currentSwitch;
   					}
   				}
-			}
-		);
+			});
 	}
 
 }
