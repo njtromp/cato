@@ -4,23 +4,21 @@
  */
 module.exports = {
 	enableSensor: function() {
-		function triggerTime(nanotimestructure) {
-			return (nanotimestructure[0] * 1000000000) + nanotimestructure[1];
+		function convertNanoTimeData(nanoTimeData) {
+			return (nanoTimeData[0] * 1000000000) + nanoTimeData[1];
 		} 
 		console.log('Installing sensor listener.');
 		var lastSwitch = null;
 		var Gpio = require('onoff').Gpio,
-  			button = new Gpio(22, 'in', 'both');
-  			button.watch(function(err, value) {
+  		  rpmSensor = new Gpio(22, 'in', 'both');
+  		  rpmSensor.watch(function(err, value) {
   				if (value == 0) {
-  					var currentSwitch = process.hrtime();
-  					if (lastSwitch == null) {
-  						lastSwitch = currentSwitch;
-  					} else {
-  						var deltaInNanos = (triggerTime(currentSwitch) - triggerTime(lastSwitch));
-  						console.log("RPS = " + (1000000000 / (deltaInNanos / 6)));
-  						lastSwitch = currentSwitch;
+  					var currentSwitch = convertNanoTimeData(process.hrtime());
+  					if (lastSwitch != null) {
+  						var deltaInNanos = currentSwitch - lastSwitch;
+  						console.log("RPM = " + (10000000000 / deltaInNanos));
   					}
+            lastSwitch = currentSwitch;
   				}
 			});
 	}
