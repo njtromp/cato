@@ -1,7 +1,7 @@
 /**
  * This module will shutdown the Raspberry PI when a button is pressed.
  * In order to prevent unwanted shutdowns the button needs to be pressed
- * twice before the shutting down is peerformed. As an extra safeguard
+ * twice before the shutting down is performed. As an extra safeguard
  * the second press must be between half a second after and two seconds
  * after the first press.
  */
