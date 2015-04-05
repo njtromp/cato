@@ -44,12 +44,13 @@ var constants = {
  * and that can start the motor control.
  */
 function PWM(options, startPWMControl) {
+    this.debug = !!options.debug;
+
     if (this.debug) {
         console.log("Initializing...");
     }
 
     this.i2c = options.i2c;
-    this.debug = !!options.debug;
     this.frequency = options.frequency;
     var cycleLengthMicroSeconds = 1000000 / options.frequency;
     this.stepLengthMicroSeconds = cycleLengthMicroSeconds / constants.stepsPerCycle;
