@@ -30,7 +30,7 @@ function PulseSensor(options, pulseCallback) {
   this.pulses = new Array();
   
   this.sensor = new Gpio(options.sensorPin, 'in', 'both');
-  this.sensor.watch(this._registerPulse);
+  this.sensor.watch(registerPulse);
   THIS = this;
 }
 
@@ -49,18 +49,10 @@ PulseSensor.prototype.getAveragePulseLength = function() {
   }
 }
 
-function averagePulseLength(copyOfPulses) {
-  var sum = 0;
-  for (var i = 0; i < copyOfPulses.length; i++) {
-    sum += copyOfPulses[i];
-  }
-  return sum / copyOfPulses.length;
-}
-
 /**
- * Private function, should be hidden from clients!
+ * Adds new pulse to the set of pulses and calls the pulseCallback function.
  */
-PulseSensor.prototype._registerPulse = function(err, value) {
+function registerPulse(err, value) {
   if (value == THIS.activeLevel) {
     var currentSwitch = convertNanoTimeData(process.hrtime());
     if (THIS.lastSwitch != -1) {
@@ -72,8 +64,22 @@ PulseSensor.prototype._registerPulse = function(err, value) {
   }
 }
 
+/**
+ * Converts the nano-second time construct (from process.hrtime()) into a single value.
+ */
 function convertNanoTimeData(nanoTimeData) {
   return (nanoTimeData[0] * 1000000000) + nanoTimeData[1];
 } 
+
+/**
+ * Returns the average pulse length of the pulses present in copyOfPulses.
+ */
+function averagePulseLength(copyOfPulses) {
+  var sum = 0;
+  for (var i = 0; i < copyOfPulses.length; i++) {
+    sum += copyOfPulses[i];
+  }
+  return sum / copyOfPulses.length;
+}
 
 module.exports = PulseSensor;

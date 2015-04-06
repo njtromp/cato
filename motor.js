@@ -11,7 +11,7 @@ var PulseSensor = require('./pulse-sensor');
 var pwmOptions = {
     i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
     frequency: 50,
-    debug: true
+    debug: false
 };
 
 var sensorOptions = {
@@ -24,14 +24,14 @@ var MOTOR_CHANNEL = 0;
 var FULL_STOP = 0;
 var FULL_AHEAD = 4096;
 
-var pulseSensor = new PulseSensor(sensorOptions, function(bla) {console.log(bla);});
+var pulseSensor = new PulseSensor(sensorOptions);
 var pwm = new PWM(pwmOptions, function() {
     console.log("Initialization done");
     controlMotor(pwm, pulseSensor);
 });
 
 function controlMotor(pwm, pulseSensor) {
-    //console.log('About the turn the Motor on...');
+    console.log('About the turn control the motor...');
     //pwm.setChannelOffStep(0, 4095);
     setInterval(function() {
         var pulseLength = pulseSensor.getAveragePulseLength();
