@@ -35,12 +35,12 @@ var constants = {
 /**
  * Creates a PWM controller for a specific PCA9685 board.
  *
- * options has three properties.
+ * @param: options has three properties.
  * - i2c: the I2C instance that takes care of the low-level communication.
  * - frequence: the frequency in HZ that the PCA9685 will be using. 
  * - debug: false/true which controls the logging at debug level.
  *
- * startPWMControl is a function that is called after the PCA9685 board has been initialized
+ * @param: startPWMControl is a function that is called after the PCA9685 board has been initialized
  * and that can start the motor control.
  */
 function PWM(options, startPWMControl) {
