@@ -37,7 +37,8 @@ function PulseSensor(options, pulseCallback) {
 /**
  * Retuns the average pulse length of the pulses since the
  * last call to this function. The pulse length is in nanosecods.
- * A value
+ * A value of -1 indicates that no pulse has been detected since
+ * the previous pulse!
  */
 PulseSensor.prototype.getAveragePulseLength = function() {
   if (this.pulses.length == 0) {
