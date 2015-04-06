@@ -18,7 +18,7 @@ var THIS = null;
  * - sensorPin: the GPIO pin number to which the pulse sensor is attached.
  * - activeLevel: the level (0 or 1) which is considered as the start of a new pulse. 
  *
- * @param: pulseCallback function is called on every pulse. This method takes a single
+ * @param: pulseCallback (optional) function is called on every pulse. This method takes a single
  * parameter that will have the value of the pulselength in nanoseconds of the last pulse.
  */
 function PulseSensor(options, pulseCallback) {
