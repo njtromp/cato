@@ -10,7 +10,7 @@ var PulseSensor = require('./pulse-sensor');
  
 var pwmOptions = {
     i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
-    frequency: 50,
+    frequency: 200,
     debug: false
 };
 
@@ -26,57 +26,52 @@ var FULL_AHEAD = 4096;
 
 var pulseSensor = new PulseSensor(sensorOptions);
 var pwm = new PWM(pwmOptions, function() {
-    console.log("Initialization done");
-    controlMotor(pwm, pulseSensor);
+    console.log("Initializatiing RPM controller");
+    var rpmController = new RPMController(pwm, pulseSensor);
+
+    // Temporary code for development
+    setTimeout(function() {
+        console.log('Stopping the engine...');
+        rpmController.setRPM(0);
+    }, 20000);
 });
 
-function controlMotor(pwm, pulseSensor) {
-    console.log('About the turn control the motor...');
-    //pwm.setChannelOffStep(0, 4095);
-    setInterval(function() {
-        var pulseLength = pulseSensor.getAveragePulseLength();
-        if (pulseLength > 0) {
-            console.log('RPM ' + Math.floor(10000000000 / pulseLength));
-        }
-    }, 300);
+function RPMController(pwm, pulseSensor) {
+    console.log('About to take control over the RPM...');
+    this.targetRPM = 0;
+    this.offStep = 0;
+    pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
+    
+    setInterval(this.controlRPM, 300);
+}
 
-    var direction = -1;
-    var brightness = 4095;
-    function dim() {
-        brightness += direction * 100;
-        if (brightness < 0) {
-            direction = +1;
-            brightness = 0;
-        } else if (brightness > 4095) {
-            direction = -1;
-            brightness = 4095;
+RPMController.prototype.setRPM = function(rpm) {
+    this.targetRPM = rpm;
+}
+
+RPMController.prototype.controlRPM = function() {
+    var pulseLength = pulseSensor.getAveragePulseLength();
+    if (pulseLength > 0) {
+        var rpm = Math.floor(10000000000 / pulseLength);
+        console.log('RPM [' + rpm + '], targetRPM [' + this.targetRPM + ']');
+        var newOffStep = Math.floor(this.offStep * (targetRPM / rpm));
+        if (newOffStep > FULL_AHEAD) {
+            newOffStep = FULL_AHEAD;
+        } else if (newOffStep < FULL_STOP) {
+            newOffStep = FULL_STOP;
         }
-        pwm.setChannelOffStep(MOTOR_CHANNEL, brightness);
-        setTimeout(dim, 10);    
+        if (targetRPM < 300) {
+            if (newOffStep - offStep > 20) {
+                newOffStep = offStep + 20;
+            } else if (newOffStep - offStep < -20) {
+                newOffStep = offStep - 20;
+            }
+        }
+    } else {
+        // TODO: determine a beter value...
+        this.offStep  = 400;
     }
-    // Start the cycle
-    // dim();
-    pwm.allChannelsOff();
-
-    setTimeout(function () {
-        pwm.switchChannelOn(MOTOR_CHANNEL);
-        console.log('Switched on.');
-        setTimeout(function() {
-            pwm.switchChannelOff(MOTOR_CHANNEL);
-            console.log('Switched off.');
-            setTimeout(function () {
-                pwm.setChannelOffStep(MOTOR_CHANNEL, 1024);
-                console.log('Dimmed 25%.');
-            }, 1000);
-        }, 1000);
-    }, 1000);
-
-    setTimeout(function() {pwm.setChannelOffStep(MOTOR_CHANNEL, FULL_AHEAD);}, 4000);
-    setTimeout(function() {pwm.setChannelOffStep(MOTOR_CHANNEL, FULL_STOP);}, 7000);
-
-    setTimeout(function() {
-        console.log('Shutting down');
-        pwm.allChannelsOff();
-    }, 10000);
-
+    console.log('New offStep [' + newOffStep + '], current [' + this.offStep + ']');
+    this.offStep = newOffStep;
+    pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
 }
