@@ -1,5 +1,6 @@
 /**
- * This module is currently for testing the PWM module.
+ * This module can adjust a PWM module so that the RPM that is measured by a pulseSensor
+ * matches that which the module is supposed to maintain.
  */
 
 "use strict";
@@ -41,6 +42,9 @@ RPMController.prototype.setRPM = function(rpm) {
     this.targetRPM = rpm;
 }
 
+/**
+ * Private function.
+ */
 RPMController.prototype.controlRPM = function() {
     if (this.targetRPM == 0) {
         this.offStep = 0;

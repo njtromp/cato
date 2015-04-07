@@ -23,7 +23,7 @@ function readParsedNMEA() {
 	console.log('Waiting...');
 	delayed.delay(function() {
 		console.log('Done');
-		listener.disconnect(;
+		listener.disconnect();
 	}, 5000);
 	console.log('klaar');
 }
