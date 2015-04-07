@@ -7,10 +7,6 @@
 
 var Gpio = require('onoff').Gpio;
 
-// Used to have a reference to the sensor object inside the method that is called by the GPIO code
-// on every new pulse.
-var THIS = null;
-
 /**
  * Starts a new sensor. 
  *
@@ -30,8 +26,10 @@ function PulseSensor(options, pulseCallback) {
   this.pulses = new Array();
   
   this.sensor = new Gpio(options.sensorPin, 'in', 'both');
-  this.sensor.watch(registerPulse);
-  THIS = this;
+  var _this = this;
+  this.sensor.watch(function(err, value) {
+    _this.registerPulse(value)
+  });
 }
 
 /**
@@ -52,15 +50,15 @@ PulseSensor.prototype.getAveragePulseLength = function() {
 /**
  * Adds new pulse to the set of pulses and calls the pulseCallback function.
  */
-function registerPulse(err, value) {
-  if (value == THIS.activeLevel) {
+PulseSensor.prototype.registerPulse = function(value) {
+  if (value == this.activeLevel) {
     var currentSwitch = convertNanoTimeData(process.hrtime());
-    if (THIS.lastSwitch != -1) {
-      var pulseLengthInNanos = currentSwitch - THIS.lastSwitch;
-      THIS.pulses.push(pulseLengthInNanos);
-      THIS.pulseCallback(pulseLengthInNanos);
+    if (this.lastSwitch != -1) {
+      var pulseLengthInNanos = currentSwitch - this.lastSwitch;
+      this.pulses.push(pulseLengthInNanos);
+      this.pulseCallback(pulseLengthInNanos);
     }
-    THIS.lastSwitch = currentSwitch;
+    this.lastSwitch = currentSwitch;
   }
 }
 
