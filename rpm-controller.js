@@ -10,7 +10,7 @@ var PulseSensor = require('./pulse-sensor');
  
 var pwmOptions = {
     i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
-    frequency: 200,
+    frequency: 100,
     debug: false
 };
 
@@ -19,59 +19,106 @@ var sensorOptions = {
     activeLevel: 1
 }
 
+var rpmOptions = {
+    repeatInterval: 300,
+    autoOffDelay: 20000,
+    debug: false
+}
+
+var pulseSensor = new PulseSensor(sensorOptions);
+var rpmController = null;
+var pwm = new PWM(pwmOptions, function() {
+    rpmController = new RPMController(rpmOptions, pwm, pulseSensor);
+    rpmController.setRPM(100);
+});
+
 // Constants
 var MOTOR_CHANNEL = 0;
 var FULL_STOP = 0;
 var FULL_AHEAD = 4096;
 
-var pulseSensor = new PulseSensor(sensorOptions);
-var pwm = new PWM(pwmOptions, function() {
-    console.log("Initializatiing RPM controller");
-    var rpmController = new RPMController(pwm, pulseSensor);
-
-    // Temporary code for development
-    setTimeout(function() {
-        console.log('Stopping the engine...');
-        rpmController.setRPM(0);
-    }, 20000);
-});
-
-function RPMController(pwm, pulseSensor) {
-    console.log('About to take control over the RPM...');
+function RPMController(options, pwm, pulseSensor) {
     this.targetRPM = 0;
     this.offStep = 0;
+    this.debug = options.debug;
+    if (this.debug) {
+        console.log('About to take control over the RPM...');
+    }
+
     pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
-    
-    setInterval(this.controlRPM, 300);
+    var _this = this;
+    setInterval(function() {
+        _this.controlRPM();
+    }, options.repeatInterval);
+
+    if (options.autoOffDelay > 0) {
+        console.log('Activating auto stop.');
+        setTimeout(function() {
+            console.log('Auto stop activated!');
+            _this.setRPM(0);
+        }, options.autoOffDelay);
+    }
 }
 
 RPMController.prototype.setRPM = function(rpm) {
+    if (this.debug) {
+        console.log('New target RPM [' + rpm + ']');
+    }
     this.targetRPM = rpm;
 }
 
 RPMController.prototype.controlRPM = function() {
-    var pulseLength = pulseSensor.getAveragePulseLength();
-    if (pulseLength > 0) {
-        var rpm = Math.floor(10000000000 / pulseLength);
-        console.log('RPM [' + rpm + '], targetRPM [' + this.targetRPM + ']');
-        var newOffStep = Math.floor(this.offStep * (targetRPM / rpm));
-        if (newOffStep > FULL_AHEAD) {
-            newOffStep = FULL_AHEAD;
-        } else if (newOffStep < FULL_STOP) {
-            newOffStep = FULL_STOP;
-        }
-        if (targetRPM < 300) {
-            if (newOffStep - offStep > 20) {
-                newOffStep = offStep + 20;
-            } else if (newOffStep - offStep < -20) {
-                newOffStep = offStep - 20;
+    if (this.targetRPM == 0) {
+        this.offStep = 0;
+    } else {
+        var pulseLength = pulseSensor.getAveragePulseLength();
+        if (pulseLength > 0) {
+            // We are able to determine the RPM
+            var currentRPM = determineRPM(pulseLength);
+            if (this.debug) {
+                console.log('Target RPM [' + this.targetRPM + '], actual RPM [' + currentRPM + ']');
+            }
+            // Do a rough estimation for the new off-step
+            var newOffStep = Math.floor(this.offStep * (this.targetRPM / currentRPM));
+            // Keep it real
+            if (newOffStep > FULL_AHEAD) {
+                newOffStep = FULL_AHEAD;
+            } else if (newOffStep < FULL_STOP) {
+                newOffStep = FULL_STOP;
+            }
+            // When running slowly, only do minor adjustments.
+            if (currentRPM < 200) {
+                newOffStep = limitChange(this.offStep, newOffStep, 10);
+            } else {
+                newOffStep = limitChange(this.offStep, newOffStep, 100);
+            }
+            if (this.debug) {
+                console.log('Current off-step [' + this.offStep + '], new off-step [' + newOffStep + ']');
+            }
+            this.offStep = newOffStep;
+        } else {
+            // Not running but it should be running
+            if (this.targetRPM > 0) {
+                if (this.debug) {
+                    console.log('Ignition...');
+                }
+                this.offStep  = 800;
             }
         }
-    } else {
-        // TODO: determine a beter value...
-        this.offStep  = 400;
     }
-    console.log('New offStep [' + newOffStep + '], current [' + this.offStep + ']');
-    this.offStep = newOffStep;
+    
     pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
+}
+
+function determineRPM(pulseLength) {
+    return Math.floor(10000000000 / pulseLength);
+}
+
+function limitChange(curentOffStep, newOffStep, limit) {
+    if (newOffStep - curentOffStep > limit) {
+        newOffStep = curentOffStep + limit;
+    } else if (newOffStep - curentOffStep < -limit) {
+        newOffStep = curentOffStep - limit;
+    }
+    return newOffStep;
 }
