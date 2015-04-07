@@ -4,34 +4,6 @@
 
 "use strict";
 
-var I2C = require("i2c");
-var PWM = require("./pwm");
-var PulseSensor = require('./pulse-sensor');
- 
-var pwmOptions = {
-    i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
-    frequency: 100,
-    debug: false
-};
-
-var sensorOptions = {
-    sensorPin: 22,
-    activeLevel: 1
-}
-
-var rpmOptions = {
-    repeatInterval: 300,
-    autoOffDelay: 20000,
-    debug: false
-}
-
-var pulseSensor = new PulseSensor(sensorOptions);
-var rpmController = null;
-var pwm = new PWM(pwmOptions, function() {
-    rpmController = new RPMController(rpmOptions, pwm, pulseSensor);
-    rpmController.setRPM(100);
-});
-
 // Constants
 var MOTOR_CHANNEL = 0;
 var FULL_STOP = 0;
@@ -41,11 +13,13 @@ function RPMController(options, pwm, pulseSensor) {
     this.targetRPM = 0;
     this.offStep = 0;
     this.debug = options.debug;
+    this.pwm = pwm;
+    this.pulseSensor = pulseSensor;
     if (this.debug) {
         console.log('About to take control over the RPM...');
     }
 
-    pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
+    this.pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
     var _this = this;
     setInterval(function() {
         _this.controlRPM();
@@ -71,7 +45,7 @@ RPMController.prototype.controlRPM = function() {
     if (this.targetRPM == 0) {
         this.offStep = 0;
     } else {
-        var pulseLength = pulseSensor.getAveragePulseLength();
+        var pulseLength = this.pulseSensor.getAveragePulseLength();
         if (pulseLength > 0) {
             // We are able to determine the RPM
             var currentRPM = determineRPM(pulseLength);
@@ -107,7 +81,7 @@ RPMController.prototype.controlRPM = function() {
         }
     }
     
-    pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
+    this.pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
 }
 
 function determineRPM(pulseLength) {
@@ -122,3 +96,5 @@ function limitChange(curentOffStep, newOffStep, limit) {
     }
     return newOffStep;
 }
+
+module.exports = RPMController;
