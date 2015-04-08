@@ -11,9 +11,29 @@ function keypressModule() {
 
 	// listen for the "keypress" event
 	process.stdin.on('keypress', function (ch, key) {
-	  console.log('got "keypress"', key);
-	  if (key && key.ctrl && key.name == 'c') {
-	    process.stdin.pause();
+	  switch (key.name) {
+	  	case 'c':
+		  	if (key && key.ctrl) {
+		    	process.stdin.pause();
+	  		}
+	  		break;
+	  	case 'up':
+	  		console.log('Increase RPM');
+	  		break;
+	  	case 'down':
+	  		console.log('Decrease RPM');
+	  		break;
+	  	case 'left':
+	  		console.log('Previous speed');
+	  		break;
+	  	case 'right':
+	  		console.log('Next speed');
+	  		break;
+	  	case 's':
+		  	if (key && key.ctrl) {
+		  		console.log('Saving calibration table');
+		  	}
+		  	break;
 	  }
 	});
 	
@@ -21,14 +41,6 @@ function keypressModule() {
 	process.stdin.resume();
 }
 
-function rawMode() {
-	process.stdin.resume();
-
-	process.stdin.on('data', function(chunk) {
-	  console.log('chunk: ' + chunk);
-	});
-}
 
 keypressModule();
-// rawMode();
 console.log('Start typing...');
