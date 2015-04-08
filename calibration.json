@@ -1,7 +1,7 @@
 {
 	"limits": {
 		"min": 0.5,
-		"max": 8
+		"max": 8.0
 	},
 	"speeds": [
 		{
@@ -9,35 +9,35 @@
 			"rpm": 79
 		},
 		{
-			"speed": 1,
+			"speed": 1.0,
 			"rpm": 101
 		},
 		{
-			"speed": 2,
+			"speed": 2.0,
 			"rpm": 200
 		},
 		{
-			"speed": 3,
+			"speed": 3.0,
 			"rpm": 300
 		},
 		{
-			"speed": 4,
+			"speed": 4.0,
 			"rpm": 400
 		},
 		{
-			"speed": 5,
+			"speed": 5.0,
 			"rpm": 500
 		},
 		{
-			"speed": 6,
+			"speed": 6.0,
 			"rpm": 600
 		},
 		{
-			"speed": 7,
+			"speed": 7.0,
 			"rpm": 700
 		},
 		{
-			"speed": 8,
+			"speed": 8.0,
 			"rpm": 800
 		}
 	]
