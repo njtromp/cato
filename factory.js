@@ -22,8 +22,10 @@ var rpmOptions = {
     debug: false
 }
 
-var pwm = new PWM(pwmOptions);
-var pulseSensor = new PulseSensor(sensorOptions);
-var rpmController = new RPMController(rpmOptions, pwm, pulseSensor);
-rpmController.setRPM(800);
+function createRPMController() {
+	var pwm = new PWM(pwmOptions);
+	var pulseSensor = new PulseSensor(sensorOptions);
+	return new RPMController(rpmOptions, pwm, pulseSensor);
+}
 
+module.exports = createRPMController;
