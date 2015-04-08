@@ -6,8 +6,8 @@
 
 "use strict";
 
-//var Factory = require('./factory');
-//var RPMController = Factory.createRPMController();
+var Factory = require('./factory');
+var RPMController = Factory.createRPMController();
 var fs = require('fs');
 
 var calibration = require('./calibration.json');
@@ -68,7 +68,7 @@ function showSpeedChange() {
 
 function adjustRPM() {
 	console.log(calibration.speeds[currentSpeed].rpm);
-	// rpmController.setRPM(calibration.speeds[currentSpeed].rpm);
+	rpmController.setRPM(calibration.speeds[currentSpeed].rpm);
 }
 
 function saveCalibrationFile() {
