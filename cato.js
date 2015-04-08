@@ -4,9 +4,9 @@
  */
 
 // Start the correcting the clock.
-var correctClock = require('./correct-clock.js');
+var correctClock = require('./correct-clock');
 correctClock.start();
 
 // Enable the shutdown button.
-var shutdown = require('./shutdown.js');
+var shutdown = require('./shutdown');
 shutdown.enableButton();
