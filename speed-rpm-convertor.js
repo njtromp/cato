@@ -9,10 +9,7 @@
 
 var calibration = require('./calibration.json');
 
-function SpeedRPMConvertor() {
-}
-
-SpeedRPMConvertor.prototype.convert = function(speed) {
+function convertSpeed2RPM(speed) {
 	if (speed < calibration.limits.min) {
 		return 0;
 	}
@@ -29,3 +26,5 @@ SpeedRPMConvertor.prototype.convert = function(speed) {
 		return Math.floor(calibration.speeds[i].rpm + (calibration.speeds[i + 1].rpm - calibration.speeds[i].rpm) * ((speed - calibration.speeds[i].speed) / (calibration.speeds[i + 1].speed - calibration.speeds[i].speed)));
 	}
 }
+
+module.exports = convertSpeed2RPM;
