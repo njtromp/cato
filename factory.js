@@ -10,7 +10,7 @@ var LogController =  require('./log-controller');
 var Options = {
     PWM: {
         i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
-        frequency: 100,
+        frequency: 100, // Hz
         debug: false
     },
     PulseSensor: {
@@ -18,16 +18,15 @@ var Options = {
         activeLevel: 1
     },
     RPM: {
-        repeatInterval: 300,
-        autoOffDelay: 20000,
-        debug: true
+        repeatInterval: 300, // Milliseconds between every RPM control cycle.
+        debug: false
     },
     GPSD: {
         port: 2947,
         hostname: 'localhost',
-        mockSpeed: true,
-        mockInterval: 3000,
-        debug: true
+        mockSpeed: false,
+        mockInterval: 3000, // Milliseconds between mocked speed updates.
+        debug: false
     }
 }
 
