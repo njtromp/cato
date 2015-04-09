@@ -1,8 +1,8 @@
 /**
- * This modules determines converts a speed (in nautical miles per hour) into the RPM the log-motor should have.
- * If the speed is less then the minimum value 0 is returned for the RPM. If the speed is higher then the maximum
- * the RPM value for the maximum is returned. Any other speed retults in a value that is a linear interpolation
- * between the two closest values.
+ * This modules converts a speed in knots (nautical miles per hour) into the RPM the log-motor should have.
+ * If the speed is less then the minimum value the log-motor will be turned off by returning 0. If the speed
+ * is higher then the maximum the RPM value for the maximum is returned. Any other speed retults in a value
+ * that is a linear interpolation between the two closest values.
  */
 
 "use strict";
@@ -10,16 +10,28 @@
 var calibration = require('./calibration.json');
 
 function convertSpeed2RPM(speed) {
+	// Switch off if below minimum
 	if (speed < calibration.limits.min) {
 		return 0;
 	}
+	// Keep withing limits
 	if (speed > calibration.limits.max) {
 		speed = calibration.limits.max;
 	}
+	return interpolate(speed, findLowestCalibrationPoint(speed));
+}
+
+function findLowestCalibrationPoint(speed) {
 	var i = 0;
 	while (i < (calibration.speeds.length - 1) && speed >= calibration.speeds[i + 1].speed) {
 		i += 1;
 	};
+	return i;
+}
+
+function interpolate(speed, lowerstCalibrationPoint) {
+	// Just a short-cut to keep the code small ;-)
+	var i = lowerstCalibrationPoint;
 	if (speed == calibration.speeds[i].speed) {
 		return calibration.speeds[i].rpm;
 	} else {
