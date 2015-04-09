@@ -1,3 +1,4 @@
+
 /**
  * This program can be used to calibrate the speed to RPM table that is stored in 'calibrarion.json'.
  * With the left and right arrow keys different speeds are selected. With the up and down arrow keys
@@ -6,8 +7,9 @@
 
 "use strict";
 
-var Factory = require('./factory');
-var RPMController = Factory.createRPMController();
+var Factory = new require('./factory');
+var factory = new Factory();
+var rpmController = factory.createRPMController();
 var fs = require('fs');
 
 var calibration = require('./calibration.json');

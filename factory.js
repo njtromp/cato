@@ -4,46 +4,45 @@ var I2C = require("i2c");
 var PWM = require("./pwm");
 var PulseSensor = require('./pulse-sensor');
 var RPMController = require('./rpm-controller');
-var GPSListener = require('./gpsd-listener');
+var GPSDListener = require('./gpsd-listener');
 var LogController =  require('./log-controller');
  
-var PWMOptions = {
-    i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
-    frequency: 100,
-    debug: false
-};
-
-var SensorOptions = {
-    sensorPin: 22,
-    activeLevel: 1
+var Options = {
+    PWM: {
+        i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
+        frequency: 100,
+        debug: false
+    },
+    PulseSensor: {
+        sensorPin: 22,
+        activeLevel: 1
+    },
+    RPM: {
+        repeatInterval: 300,
+        autoOffDelay: 20000,
+        debug: true
+    },
+    GPSD: {
+        port: 2947,
+        hostname: 'localhost',
+        mockSpeed: true,
+        debug: true
+    }
 }
 
-var RPMOptions = {
-    repeatInterval: 300,
-    autoOffDelay: 20000,
-    debug: false
+function Factory() {}
+
+Factory.prototype.createRPMController = function() {
+	var pwm = new PWM(Options.PWM);
+	var pulseSensor = new PulseSensor(Options.PulseSensor);
+	return new RPMController(Options.RPM, pwm, pulseSensor);
 }
 
-function createRPMController() {
-	var pwm = new PWM(PWMOptions);
-	var pulseSensor = new PulseSensor(SensorOptions);
-	return new RPMController(RPMOptions, pwm, pulseSensor);
-}
-
-var GPSDOptions = {
-    port: 2947,
-    hostname: 'localhost',
-    debug: true
-}
-
-function createLogController() {
+Factory.prototype.createLogController = function() {
     var rpmController = createRPMController();
-    var logController = new LogContoller(rpmController);
-    var gpsdListener = new GPSListener(GPSDOptions, logController.setSpeed);
+    var logController = new LogController(rpmController);
+    var gpsdListener = new GPSDListener(Options.GPSD, logController.setSpeed);
     return logController;
 }
 
-module.exports = {
-    createRPMController,
-    createLogController
-}
+module.exports = Factory;

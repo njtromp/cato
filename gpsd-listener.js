@@ -6,6 +6,7 @@ var FROM_METERS_PER_SECOND_TO_KNOTS = 3600.0 / 1852.0;
 
 function GPSDListener(options, setSpeedCallback) {
 	this.debug = options.debug;
+	this.mockSpeed = options.mockSpeed;
 	this.setSpeedCallback = setSpeedCallback;
 	this.gpsdListener = new GPSD.Listener({
 	    port: options.port,
@@ -28,14 +29,14 @@ function GPSDListener(options, setSpeedCallback) {
 	this.gpsdListener.watch();
 
 	// FOR TESTING PURPOSE ONLY!!!!
-	if (this.debug) {
+	if (this.mockSpeed) {
 		setInterval(function() {
 			var tpvData = {
 				"mode": 3,
-				"speed": (Math.random() * 4.0);
+				"speed": Math.random() * 4.0
 			}
 			_this.processTPVData(tpvData);
-		}, 2000}
+		}, 2000);
 	}
 }
 
@@ -60,3 +61,5 @@ function fixIsStable(tpvData) {
 function speedAvailable(tpvData) {
 	return tpvData.speed ? true : false;
 }
+
+module.exports = GPSDListener;
