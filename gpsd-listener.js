@@ -7,6 +7,7 @@ var FROM_METERS_PER_SECOND_TO_KNOTS = 3600.0 / 1852.0;
 function GPSDListener(options, speedController) {
 	this.debug = options.debug;
 	this.mockSpeed = options.mockSpeed;
+	this.mockInterval = options.mockInterval;
 	this.speedController = speedController;
 	this.gpsdListener = new GPSD.Listener({
 	    port: options.port,
@@ -36,7 +37,7 @@ function GPSDListener(options, speedController) {
 				"speed": Math.random() * 4.0
 			}
 			_this.processTPVData(tpvData);
-		}, 2000);
+		}, this.mockInterval);
 	}
 }
 

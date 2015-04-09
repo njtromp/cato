@@ -30,7 +30,7 @@ function RPMController(options, pwm, pulseSensor) {
         console.log('Activating auto stop.');
         setTimeout(function() {
             console.log('Auto stop activated!');
-            _this.setRPM(0);
+            _this.setRPM(FULL_STOP);
         }, options.autoOffDelay);
     }
 }

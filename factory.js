@@ -26,6 +26,7 @@ var Options = {
         port: 2947,
         hostname: 'localhost',
         mockSpeed: true,
+        mockInterval: 3000,
         debug: true
     }
 }
