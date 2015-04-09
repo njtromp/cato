@@ -26,7 +26,7 @@ var Options = {
         hostname: 'localhost',
         mockSpeed: false,
         mockInterval: 3000, // Milliseconds between mocked speed updates.
-        debug: false
+        debug: true
     }
 }
 
