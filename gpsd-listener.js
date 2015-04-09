@@ -4,10 +4,10 @@ var GPSD = require('node-gpsd');
 
 var FROM_METERS_PER_SECOND_TO_KNOTS = 3600.0 / 1852.0;
 
-function GPSDListener(options, setSpeedCallback) {
+function GPSDListener(options, speedController) {
 	this.debug = options.debug;
 	this.mockSpeed = options.mockSpeed;
-	this.setSpeedCallback = setSpeedCallback;
+	this.speedController = speedController;
 	this.gpsdListener = new GPSD.Listener({
 	    port: options.port,
 	    hostname: options.hostname,
@@ -18,15 +18,15 @@ function GPSDListener(options, setSpeedCallback) {
 	    },
 	    parse: true
 	});
+	var _this = this;
 	this.gpsdListener.connect(function() {
 	    console.log('Connected to GPSD server');
-	    gpsdListener.watch();
+	    _this.gpsdListener.watch();
 	});
-	var _this = this;
 	this.gpsdListener.on('TPV', function(tpvData) {
 		_this.processTPVData(tpvData);
 	});
-	this.gpsdListener.watch();
+	// this.gpsdListener.watch();
 
 	// FOR TESTING PURPOSE ONLY!!!!
 	if (this.mockSpeed) {
@@ -46,10 +46,10 @@ function GPSDListener(options, setSpeedCallback) {
 GPSDListener.prototype.processTPVData = function(tpvData) {
 	if (fixIsStable(tpvData)) {
 		if (this.debug) {
-			console.log('We have a stable fix.');
+			console.log('We have a stable fix, ' + tpvData.speed);
 		}
 		if (speedAvailable(tpvData)) {
-			this.setSpeedCallback(tpvData.speed * FROM_METERS_PER_SECOND_TO_KNOTS);
+			this.speedController.setSpeed(tpvData.speed * FROM_METERS_PER_SECOND_TO_KNOTS);
 		}
 	}
 }

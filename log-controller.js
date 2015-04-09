@@ -1,6 +1,6 @@
 "use strict";
 
-var convertSpeed2RPM = require('./speed-rpm-convertor').convertSpeed2RPM;
+var convertSpeed2RPM = require('./speed-rpm-convertor');
 
 function LogController(rpmController) {
 	this.rpmController = rpmController;
@@ -8,6 +8,7 @@ function LogController(rpmController) {
 
 LogController.prototype.setSpeed = function(speed) {
 	var rpm =  convertSpeed2RPM(speed);
+	console.log('New RPM [' + rpm + ']');
 	this.rpmController.setRPM(rpm);
 }
 

@@ -39,9 +39,9 @@ Factory.prototype.createRPMController = function() {
 }
 
 Factory.prototype.createLogController = function() {
-    var rpmController = createRPMController();
+    var rpmController = this.createRPMController();
     var logController = new LogController(rpmController);
-    var gpsdListener = new GPSDListener(Options.GPSD, logController.setSpeed);
+    var gpsdListener = new GPSDListener(Options.GPSD, logController);
     return logController;
 }
 
