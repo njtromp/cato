@@ -14,6 +14,8 @@ function GPSDListener(options, logController) {
 	this.mockSpeed = options.mockSpeed;
 	this.mockInterval = options.mockInterval;
 	this.logController = logController;
+	this.unstableFixMonitor = null;
+
 	this.gpsdListener = new GPSD.Listener({
 	    port: options.port,
 	    hostname: options.hostname,
@@ -54,8 +56,38 @@ GPSDListener.prototype.processTPVData = function(tpvData) {
 			console.log('We have a stable fix, ' + tpvData.speed);
 		}
 		if (speedAvailable(tpvData)) {
+			this.clearUnstableFixMonitor();
 			this.logController.setSpeed(tpvData.speed * FROM_METERS_PER_SECOND_TO_KNOTS);
 		}
+	} else {
+		this.startUnstableFixMonitor();
+	}
+}
+
+/**
+ * Private
+ */
+GPSDListener.prototype.clearUnstableFixMonitor = function() {
+	if (this.unstableFixMonitor != null) {
+		clearTimeout(this.unstableFixMonitor);
+		this.unstableFixMonitor = null;
+	}
+}
+
+/**
+ * Private
+ */
+GPSDListener.prototype.startUnstableFixMonitor = function() {
+	if (this.unstableFixMonitor == null) {
+		if (this.debug) {
+			console.log('Activating a ');
+		}
+		// Make sure the speed is set to 0 if we don't get a stable fix within 5 seconds.
+		var _this = this;
+		this.unstableFixMonitor = setTimeout(function() {
+			_this.logController.setSpeed(0);
+			_this.clearUnstableFixMonitor();
+		}, 5000);
 	}
 }
 
