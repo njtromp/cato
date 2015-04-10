@@ -32,12 +32,20 @@ var Options = {
 
 function Factory() {}
 
+/**
+ * Creates a RPM controller that can be used to control the RPM.
+ * The RPM controller uses a PWM and a PulseSensor instance which are also created.
+ */
 Factory.prototype.createRPMController = function() {
 	var pwm = new PWM(Options.PWM);
 	var pulseSensor = new PulseSensor(Options.PulseSensor);
 	return new RPMController(Options.RPM, pwm, pulseSensor);
 }
 
+/**
+ * Creates a log controller that takes care of passing speed updates to the log-motor.
+ * The LogController uses a GPSDListener and a RPMController instance which are also created.
+ */
 Factory.prototype.createLogController = function() {
     var rpmController = this.createRPMController();
     var logController = new LogController(rpmController);

@@ -15,7 +15,7 @@ var fs = require('fs');
 var calibration = require('./calibration.json');
 var currentSpeed = 0;
 
-function keypressModule() {
+function calibrateApplication() {
 	var keypress = require('keypress');
 
 	// make `process.stdin` begin emitting "keypress" events
@@ -84,5 +84,5 @@ function saveCalibrationFile() {
 	}); 
 }
 
-keypressModule();
+calibrateApplication();
 showSpeedChange();

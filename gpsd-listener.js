@@ -1,3 +1,8 @@
+/**
+ * This module listens to 'TPV' (Time, Place, Velocity) messages from a GPSD instance. If a 
+ * stable fix is received the speed is passed on to a LogController.
+ */
+
 "use strict";
 
 var GPSD = require('node-gpsd');
