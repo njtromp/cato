@@ -35,7 +35,7 @@ var constants = {
 /**
  * Creates a PWM controller for a specific PCA9685 board.
  *
- * @param: options has three properties.
+ * @param: config has three properties.
  * - i2c: the I2C instance that takes care of the low-level communication.
  * - frequence: the frequency in HZ that the PCA9685 will be using. 
  * - debug: false/true which controls the logging at debug level.
@@ -43,16 +43,16 @@ var constants = {
  * @param: startPWMControl is a function that is called after the PCA9685 board has been initialized
  * and that can start the motor control.
  */
-function PWM(options, startPWMControl) {
-    this.debug = !!options.debug;
+function PWM(config, startPWMControl) {
+    this.debug = !!config.debug;
 
     if (this.debug) {
         console.log("Initializing...");
     }
 
-    this.i2c = options.i2c;
-    this.frequency = options.frequency;
-    var cycleLengthMicroSeconds = 1000000 / options.frequency;
+    this.i2c = new I2C(config.i2c.port, { device: config.i2c.device});
+    this.frequency = config.frequency;
+    var cycleLengthMicroSeconds = 1000000 / config.frequency;
     this.stepLengthMicroSeconds = cycleLengthMicroSeconds / constants.stepsPerCycle;
 
     this._send = this._send.bind(this);

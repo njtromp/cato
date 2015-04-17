@@ -6,8 +6,9 @@ var PulseSensor = require('./pulse-sensor');
 var RPMController = require('./rpm-controller');
 var GPSDListener = require('./gpsd-listener');
 var LogController =  require('./log-controller');
- 
-var Options = {
+var config = require('./config.json'); 
+
+var config = {
     PWM: {
         i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
         frequency: 100, // Hz
@@ -37,9 +38,9 @@ function Factory() {}
  * The RPM controller uses a PWM and a PulseSensor instance which are also created.
  */
 Factory.prototype.createRPMController = function() {
-	var pwm = new PWM(Options.PWM);
-	var pulseSensor = new PulseSensor(Options.PulseSensor);
-	return new RPMController(Options.RPM, pwm, pulseSensor);
+	var pwm = new PWM(config.PWM);
+	var pulseSensor = new PulseSensor(config.PulseSensor);
+	return new RPMController(config.RPM, pwm, pulseSensor);
 }
 
 /**
@@ -49,7 +50,7 @@ Factory.prototype.createRPMController = function() {
 Factory.prototype.createLogController = function() {
     var rpmController = this.createRPMController();
     var logController = new LogController(rpmController);
-    var gpsdListener = new GPSDListener(Options.GPSD, logController);
+    var gpsdListener = new GPSDListener(config.GPSD, logController);
     return logController;
 }
 

@@ -1,0 +1,25 @@
+{
+    "PWM": {
+        "I2C": { 
+            "port": 64, 
+            "device": "/dev/i2c-1"
+            },
+        "frequency": 100,
+        "debug": false
+        },
+    "PulseSensor": {
+        "sensorPin": 22,
+        "activeLevel": 1
+    },
+    "RPM": {
+        "repeatInterval": 300,
+        "debug": false
+    },
+    "GPSD": {
+        "port": 2947,
+        "hostname": "localhost",
+        "mockSpeed": false,
+        "mockInterval": 3000,
+        "debug": true
+    }
+}

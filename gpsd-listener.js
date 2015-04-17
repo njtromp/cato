@@ -9,16 +9,16 @@ var GPSD = require('node-gpsd');
 
 var FROM_METERS_PER_SECOND_TO_KNOTS = 3600.0 / 1852.0;
 
-function GPSDListener(options, logController) {
-	this.debug = options.debug;
-	this.mockSpeed = options.mockSpeed;
-	this.mockInterval = options.mockInterval;
+function GPSDListener(config, logController) {
+	this.debug = config.debug;
+	this.mockSpeed = config.mockSpeed;
+	this.mockInterval = config.mockInterval;
 	this.logController = logController;
 	this.unstableFixMonitor = null;
 
 	this.gpsdListener = new GPSD.Listener({
-	    port: options.port,
-	    hostname: options.hostname,
+	    port: config.port,
+	    hostname: config.hostname,
 	    logger:  {
 	        info: function() {},
 	        warn: console.warn,

@@ -10,22 +10,22 @@ var Gpio = require('onoff').Gpio;
 /**
  * Starts a new sensor. 
  *
- * @param: options has two properties.
+ * @param: config has two properties.
  * - sensorPin: the GPIO pin number to which the pulse sensor is attached.
  * - activeLevel: the level (0 or 1) which is considered as the start of a new pulse. 
  *
  * @param: pulseCallback (optional) function is called on every pulse. This method takes a single
  * parameter that will have the value of the pulselength in nanoseconds of the last pulse.
  */
-function PulseSensor(options, pulseCallback) {
+function PulseSensor(config, pulseCallback) {
   console.log('Installing RPM sensor listener.');
   this.pulseCallback = typeof pulseCallback === "function" ? pulseCallback : function(pulseLengthInNanos) { return; };
-  this.sensorPin = options.sensorPin;
-  this.activeLevel = options.activeLevel;
+  this.sensorPin = config.sensorPin;
+  this.activeLevel = config.activeLevel;
   this.lastSwitch = -1;
   this.pulses = new Array();
   
-  this.sensor = new Gpio(options.sensorPin, 'in', 'both');
+  this.sensor = new Gpio(config.sensorPin, 'in', 'both');
   var _this = this;
   this.sensor.watch(function(err, value) {
     _this.registerPulse(value)

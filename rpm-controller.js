@@ -10,10 +10,10 @@ var MOTOR_CHANNEL = 0;
 var FULL_STOP = 0;
 var FULL_AHEAD = 4096;
 
-function RPMController(options, pwm, pulseSensor) {
+function RPMController(config, pwm, pulseSensor) {
     this.targetRPM = 0;
     this.offStep = 0;
-    this.debug = options.debug;
+    this.debug = config.debug;
     this.pwm = pwm;
     this.pulseSensor = pulseSensor;
     if (this.debug) {
@@ -24,7 +24,7 @@ function RPMController(options, pwm, pulseSensor) {
     var _this = this;
     setInterval(function() {
         _this.controlRPM();
-    }, options.repeatInterval);
+    }, config.repeatInterval);
 }
 
 RPMController.prototype.setRPM = function(rpm) {
