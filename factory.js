@@ -7,8 +7,8 @@ var RPMController = require('./rpm-controller');
 var GPSDListener = require('./gpsd-listener');
 var LogController =  require('./log-controller');
 var config = require('./config.json'); 
-
-var config = {
+// TODO test config in json format and remove this construct if it works.
+var configOld = {
     PWM: {
         i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
         frequency: 100, // Hz
