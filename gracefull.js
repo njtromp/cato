@@ -9,9 +9,12 @@ if (true) {
 //	process.on('exit', function () {
 	process.on('SIGINT', function () {
 	 //handle your on exit code
-	 console.log("Exiting, have a nice day");
+	 console.log("Exiting (SIGINT), have a nice day");
 	});
-} else {
+	process.on('SIGTERM', function () {
+	 //handle your on exit code
+ 	   console.log("Exiting (SIGTERM), have a nice day");
+	});
 }
 
 setTimeout(function() {console.log('We are about to quit...')}, 5000);
