@@ -1,44 +1,44 @@
 {
 	"limits": {
 		"min": 0.5,
-		"max": 8.0
+		"max": 8
 	},
 	"speeds": [
 		{
 			"speed": 0.5,
-			"rpm": 79
+			"rpm": 81
 		},
 		{
-			"speed": 1.0,
+			"speed": 1,
 			"rpm": 101
 		},
 		{
-			"speed": 2.0,
+			"speed": 2,
 			"rpm": 200
 		},
 		{
-			"speed": 3.0,
+			"speed": 3,
 			"rpm": 300
 		},
 		{
-			"speed": 4.0,
+			"speed": 4,
 			"rpm": 400
 		},
 		{
-			"speed": 5.0,
-			"rpm": 500
+			"speed": 5,
+			"rpm": 508
 		},
 		{
-			"speed": 6.0,
-			"rpm": 600
+			"speed": 6,
+			"rpm": 620
 		},
 		{
-			"speed": 7.0,
-			"rpm": 700
+			"speed": 7,
+			"rpm": 726
 		},
 		{
-			"speed": 8.0,
-			"rpm": 800
+			"speed": 8,
+			"rpm": 831
 		}
 	]
 }
