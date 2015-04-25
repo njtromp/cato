@@ -57,6 +57,14 @@ function calibrateApplication() {
 		  		saveCalibrationFile();
 		  	}
 		  	break;
+	  	case 'q':
+		  	if (key && key.ctrl) {
+		  		stopMotor();
+		  		setInterval(function() {
+		  			process.exit();
+		  		}, 500);
+		  	}
+		  	break;
 	  	}
 	});
 	
@@ -71,6 +79,11 @@ function showSpeedChange() {
 function adjustRPM() {
 	console.log(calibration.speeds[currentSpeed].rpm);
 	rpmController.setRPM(calibration.speeds[currentSpeed].rpm);
+}
+
+function stopMotor() {
+	console.log('Stopping the motor.');
+	rpmController.setRPM(0);
 }
 
 function saveCalibrationFile() {
