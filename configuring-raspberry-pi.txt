@@ -1,0 +1,43 @@
+# Configuring Raspberry PI
+
+# Assuming a fresh copy of Raspbian has been installed
+sudo apt-get update
+sudo apt-get upgrade
+sudo raspi-config
+
+# Here we go
+sudo apt-get install bluetooth bluez-utils
+# TODO check if 'blueman' is really needed
+sudo apt-get install blueman
+
+hcitool scan
+
+# Take not of the MAC-address and the name
+#   00:02:76:C8:24:79   Nokia LD-3W
+
+# Add a rfcomm entry for the GPS device to /etc/bluetooth/rfcomm.conf
+# Replacing with the correct MAC and name if needed.
+
+cat << 'EOF' >> /etc/bluetooth/rfcomm.conf
+rfcomm1 {
+        bind no;
+        device 00:02:76:C8:24:79;
+        channel 2;
+        comment "Nokia LD-3W";
+}
+EOF
+
+# Connect to the device in order to enter the pincode
+bluez-simple-agent hci0 00:02:76:C8:24:79
+
+# Install GPSD
+sudo apt-get install gpsd
+
+# Start the GPSD daemon
+# -b = read-only, -G listen on all interfaces
+gpsd -b -G /dev/rfcomm1
+
+# Check if everything is working properly (Optional)
+# TODO check if 'gpsd-clients' is really needed
+sudo apt-get isnstall gpsd-clients
+gpsmon /dev/rfcomm1
