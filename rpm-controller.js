@@ -14,6 +14,7 @@ function RPMController(config, pwm, pulseSensor) {
     this.targetRPM = 0;
     this.offStep = 0;
     this.debug = config.debug;
+    this.startStep = config.startStep;
     this.pwm = pwm;
     this.pulseSensor = pulseSensor;
     if (this.debug) {
@@ -72,7 +73,7 @@ RPMController.prototype.controlRPM = function() {
                 if (this.debug) {
                     console.log('Ignition...');
                 }
-                this.offStep  = 800;
+                this.offStep  = this.startStep;
             }
         }
     }

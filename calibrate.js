@@ -7,10 +7,12 @@
 
 "use strict";
 
+var fs = require('fs');
 var Factory = new require('./factory');
+var GPIO = require('onoff').Gpio;
+
 var factory = new Factory();
 var rpmController = factory.createRPMController();
-var fs = require('fs');
 
 var calibration = require('./calibration.json');
 var currentSpeed = 0;
@@ -20,6 +22,9 @@ function calibrateApplication() {
 
 	// make `process.stdin` begin emitting "keypress" events
 	keypress(process.stdin);
+
+	var powerSwitch = new GPIO(23, 'out');
+	var power = 0;
 
 	// listen for the "keypress" event
 	process.stdin.on('keypress', function (ch, key) {
@@ -63,6 +68,17 @@ function calibrateApplication() {
 		  		setInterval(function() {
 		  			process.exit();
 		  		}, 500);
+		  	}
+		  	break;
+	  	case 'p':
+		  	if (key && key.ctrl) {
+		  		if (power == 0) {
+		  			power = 1;
+		  		} else {
+		  			power = 0;
+		  		}
+		  		console.log('Swithcing power to [' + power + ']');
+		  		powerSwitch.writeSync(power);
 		  	}
 		  	break;
 	  	}
