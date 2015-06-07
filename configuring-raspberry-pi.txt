@@ -1,14 +1,24 @@
 # Configuring Raspberry PI
 
+
+# The next could be needed when starting the rasp-config tools complains about no language has been set
+# They all need to be executed within a root shell e.g. sudo su -
+# export LANGUAGE=en_US.UTF-8
+# export LANG=en_US.UTF-8
+# export LC_ALL=en_US.UTF-8
+# locale-gen en_US.UTF-8
+# dpkg-reconfigure locales
+
+# Here is the real installation :-)
+
 # Assuming a fresh copy of Raspbian has been installed
 sudo apt-get update
 sudo apt-get upgrade
+# Use the RasPI config tool to enable I2C support
 sudo raspi-config
 
 # Here we go
-sudo apt-get install bluetooth bluez-utils
-# TODO check if 'blueman' is really needed
-sudo apt-get install blueman
+sudo apt-get install bluetooth bluez-utils blueman i2c-tools
 
 hcitool scan
 
@@ -19,25 +29,39 @@ hcitool scan
 # Replacing with the correct MAC and name if needed.
 
 cat << 'EOF' >> /etc/bluetooth/rfcomm.conf
-rfcomm1 {
-        bind no;
+rfcomm0 {
+        bind yes;
         device 00:02:76:C8:24:79;
-        channel 2;
+        channel 1;
         comment "Nokia LD-3W";
 }
+EOF
+
+cat << 'EOF' >> /etc/modules
+i2c-bcm2708 
+i2c-dev
+EOF
+
+# Only if not present, so check first!
+cat << 'EOF' >> /boot/config.txt
+dtparam=i2c1=on
+dtparam=i2c_arm=on
 EOF
 
 # Connect to the device in order to enter the pincode
 bluez-simple-agent hci0 00:02:76:C8:24:79
 
-# Install GPSD
-sudo apt-get install gpsd
+# Install GPSD daemon and some tools
+sudo apt-get install gpsd gpsd-clients
 
 # Start the GPSD daemon
 # -b = read-only, -G listen on all interfaces
-gpsd -b -G /dev/rfcomm1
+gpsd -b -G /dev/rfcomm0
 
 # Check if everything is working properly (Optional)
-# TODO check if 'gpsd-clients' is really needed
-sudo apt-get isnstall gpsd-clients
-gpsmon /dev/rfcomm1
+gpsmon /dev/rfcomm0
+
+# Install nodejs
+curl -sLS https://apt.adafruit.com/add | sudo bash
+sudo apt-get install node
+npm install node-gpsd onoff keypress i2c

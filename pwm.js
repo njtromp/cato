@@ -50,7 +50,7 @@ function PWM(config, startPWMControl) {
         console.log("Initializing...");
     }
 
-    this.i2c = new I2C(config.i2c.port, { device: config.i2c.device});
+    this.i2c = new I2C(config.I2C.port, { device: config.I2C.device});
     this.frequency = config.frequency;
     var cycleLengthMicroSeconds = 1000000 / config.frequency;
     this.stepLengthMicroSeconds = cycleLengthMicroSeconds / constants.stepsPerCycle;
