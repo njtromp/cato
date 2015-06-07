@@ -1,13 +1,20 @@
 #!/bin/bash
+
+# Wait for the Bluetooth GPS device to be ready
 while [ ! -e /dev/rfcomm1 ]; do
     sleep 1
 done
 sleep 2
+
+# Start the NTP service
+# TODO check if the is really needed
 sudo service ntp start
-
 sleep 2
-/usr/sbin/gpsd -nG /dev/rfcomm1 
 
+# Start the GPSD Daemon
+/usr/sbin/gpsd -nG /dev/rfcomm1 
 sleep 10
+
+# Start the rest of the system
 /home/pi/start-nodejs &
 
