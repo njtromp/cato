@@ -9,12 +9,12 @@
 
 var fs = require('fs');
 var Factory = new require('./factory');
-var GPIO = require('onoff').Gpio;
 
 var factory = new Factory();
 var rpmController = factory.createRPMController();
 
 var calibration = require('./calibration.json');
+var config = require('./config.json');
 var currentSpeed = 0;
 
 function calibrateApplication() {
@@ -23,62 +23,49 @@ function calibrateApplication() {
 	// make `process.stdin` begin emitting "keypress" events
 	keypress(process.stdin);
 
-	var powerSwitch = new GPIO(23, 'out');
-	var power = 0;
-
 	// listen for the "keypress" event
 	process.stdin.on('keypress', function (ch, key) {
+		// 
 		var rpmChange = key.ctrl ? 10 : 1;
 	  	switch (key.name) {
-	  	case 'c':
+	  	case 'c': // ???
 		  	if (key && key.ctrl) {
 		    	process.stdin.pause();
 	  		}
 	  		break;
-	  	case 'up':
+	  	case 'up': // Increase RPM
 	  		calibration.speeds[currentSpeed].rpm += rpmChange;
 	  		adjustRPM();
 	  		break;
-	  	case 'down':
+	  	case 'down': // Decrease RPM
 	  		calibration.speeds[currentSpeed].rpm -= rpmChange;
 	  		adjustRPM();
 	  		break;
-	  	case 'left':
+	  	case 'left': // Goto lower setting
 			if (currentSpeed > 0) {
 				currentSpeed -= 1;
 			}
 			showSpeedChange();
 	  		adjustRPM();
 	  		break;
-	  	case 'right':
+	  	case 'right': // Goto higher setting
 			if (currentSpeed < (calibration.speeds.length - 1)) {
 				currentSpeed += 1;
 			}
 			showSpeedChange();
 	  		adjustRPM();
 	  		break;
-	  	case 's':
+	  	case 's': // Save calibration configuration
 		  	if (key && key.ctrl) {
 		  		saveCalibrationFile();
 		  	}
 		  	break;
-	  	case 'q':
+	  	case 'q': // Quit
 		  	if (key && key.ctrl) {
 		  		stopMotor();
 		  		setInterval(function() {
 		  			process.exit();
 		  		}, 500);
-		  	}
-		  	break;
-	  	case 'p':
-		  	if (key && key.ctrl) {
-		  		if (power == 0) {
-		  			power = 1;
-		  		} else {
-		  			power = 0;
-		  		}
-		  		console.log('Swithcing power to [' + power + ']');
-		  		powerSwitch.writeSync(power);
 		  	}
 		  	break;
 	  	}
@@ -115,3 +102,4 @@ function saveCalibrationFile() {
 
 calibrateApplication();
 showSpeedChange();
+adjustRPM();

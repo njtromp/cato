@@ -5,7 +5,7 @@
             "device": "/dev/i2c-1"
             },
         "frequency": 100,
-        "debug": true
+        "debug": false
         },
     "PulseSensor": {
         "sensorPin": 22,
@@ -13,7 +13,11 @@
     },
     "RPM": {
         "repeatInterval": 300,
-        "startStep": 800,
+        "startStep": 1000,
+        "powerThreshold": 300,
+        "adjustmentThreshold": 200,
+        "smallStepChange": 10,
+        "largeStepChange": 100,
         "debug": false
     },
     "GPSD": {
@@ -21,6 +25,12 @@
         "hostname": "localhost",
         "mockSpeed": false,
         "mockInterval": 3000,
-        "debug": true
+        "debug": false
+    },
+    "PowerSwitch": {
+        "switchPin": 23,
+        "delayInMillis": 5000,
+        "initialState": 1,
+        "debug": false
     }
 }

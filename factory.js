@@ -1,35 +1,19 @@
 "use strict";
 
+var Constants = {
+    OFF: 0,
+    ON: 1
+}
+
 var I2C = require("i2c");
 var PWM = require("./pwm");
 var PulseSensor = require('./pulse-sensor');
 var RPMController = require('./rpm-controller');
 var GPSDListener = require('./gpsd-listener');
 var LogController =  require('./log-controller');
+var DelayedSwitch = require('./delayed-switch');
+var GPIO = require('onoff').Gpio;
 var config = require('./config.json'); 
-// TODO test config in json format and remove this construct if it works.
-var configOld = {
-    PWM: {
-        i2c: new I2C(0x40, { device: "/dev/i2c-1" }),
-        frequency: 100, // Hz
-        debug: false
-    },
-    PulseSensor: {
-        sensorPin: 22,
-        activeLevel: 1
-    },
-    RPM: {
-        repeatInterval: 300, // Milliseconds between every RPM control cycle.
-        debug: false
-    },
-    GPSD: {
-        port: 2947,
-        hostname: 'localhost',
-        mockSpeed: false,
-        mockInterval: 3000, // Milliseconds between mocked speed updates.
-        debug: true
-    }
-}
 
 function Factory() {}
 
@@ -40,7 +24,8 @@ function Factory() {}
 Factory.prototype.createRPMController = function() {
 	var pwm = new PWM(config.PWM);
 	var pulseSensor = new PulseSensor(config.PulseSensor);
-	return new RPMController(config.RPM, pwm, pulseSensor);
+    var powerSwitch = createPowerSwitch();
+	return new RPMController(config.RPM, pwm, pulseSensor, powerSwitch);
 }
 
 /**
@@ -52,6 +37,25 @@ Factory.prototype.createLogController = function() {
     var logController = new LogController(rpmController);
     var gpsdListener = new GPSDListener(config.GPSD, logController);
     return logController;
+}
+
+function createPowerSwitch() {
+    var powerSwitch = new GPIO(config.PowerSwitch.switchPin, 'out');
+    var onFunction = function() {
+        if (config.PowerSwitch.debug) {
+            console.log('Flipping the power switch to ON');
+        }
+        powerSwitch.writeSync(Constants.ON);
+    };
+    var offFunction = function() {
+        if (config.PowerSwitch.debug) {
+            console.log('Flipping the power switch to OFF');
+        }
+        powerSwitch.writeSync(Constants.OFF);
+    };
+    // Wrap the actual powerswitch in a delayed switch
+    // this will ensure that the power is not switched on and off every control interval
+    return new DelayedSwitch(config.PowerSwitch, onFunction, offFunction);
 }
 
 module.exports = Factory;

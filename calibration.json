@@ -6,11 +6,11 @@
 	"speeds": [
 		{
 			"speed": 0.5,
-			"rpm": 81
+			"rpm": 80
 		},
 		{
 			"speed": 1,
-			"rpm": 101
+			"rpm": 100
 		},
 		{
 			"speed": 2,
@@ -26,19 +26,19 @@
 		},
 		{
 			"speed": 5,
-			"rpm": 508
+			"rpm": 500
 		},
 		{
 			"speed": 6,
-			"rpm": 620
+			"rpm": 600
 		},
 		{
 			"speed": 7,
-			"rpm": 726
+			"rpm": 700
 		},
 		{
 			"speed": 8,
-			"rpm": 831
+			"rpm": 800
 		}
 	]
 }

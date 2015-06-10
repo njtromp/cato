@@ -10,13 +10,18 @@ var MOTOR_CHANNEL = 0;
 var FULL_STOP = 0;
 var FULL_AHEAD = 4096;
 
-function RPMController(config, pwm, pulseSensor) {
+function RPMController(config, pwm, pulseSensor, powerSwitch) {
     this.targetRPM = 0;
     this.offStep = 0;
     this.debug = config.debug;
     this.startStep = config.startStep;
+    this.powerThreshold = config.powerThreshold;
+    this.adjustmentThreshold = config.adjustmentThreshold;
+    this.smallStepChange = config.smallStepChange;
+    this.largeStepChange = config.largeStepChange;
     this.pwm = pwm;
     this.pulseSensor = pulseSensor;
+    this.powerSwitch = powerSwitch;
     if (this.debug) {
         console.log('About to take control over the RPM...');
     }
@@ -58,10 +63,10 @@ RPMController.prototype.controlRPM = function() {
                 newOffStep = FULL_STOP;
             }
             // When running slowly, only do minor adjustments.
-            if (currentRPM < 200) {
-                newOffStep = limitChange(this.offStep, newOffStep, 10);
+            if (currentRPM < this.adjustmentThreshold) {
+                newOffStep = limitChange(this.offStep, newOffStep, this.smallStepChange);
             } else {
-                newOffStep = limitChange(this.offStep, newOffStep, 100);
+                newOffStep = limitChange(this.offStep, newOffStep, this.largeStepChange);
             }
             if (this.debug) {
                 console.log('Current off-step [' + this.offStep + '], new off-step [' + newOffStep + ']');
@@ -78,20 +83,22 @@ RPMController.prototype.controlRPM = function() {
         }
     }
     
+    if (this.targetRPM >= this.powerThreshold) {
+        this.powerSwitch.switchOff();
+    } else {
+        this.powerSwitch.switchOn();
+    }
     this.pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
 }
 
 function determineRPM(pulseLength) {
+    // TODO explain where the magic number comes from
     return Math.floor(10000000000 / pulseLength);
 }
 
 function limitChange(curentOffStep, newOffStep, limit) {
-    if (newOffStep - curentOffStep > limit) {
-        newOffStep = curentOffStep + limit;
-    } else if (newOffStep - curentOffStep < -limit) {
-        newOffStep = curentOffStep - limit;
-    }
-    return newOffStep;
+    var change = Math.min(Math.abs(curentOffStep - newOffStep), limit);
+    return newOffStep >= curentOffStep ? curentOffStep + change : curentOffStep - change;
 }
 
 module.exports = RPMController;

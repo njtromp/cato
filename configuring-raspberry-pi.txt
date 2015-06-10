@@ -37,6 +37,7 @@ rfcomm0 {
 }
 EOF
 
+# Activate I2C modules and configuration
 cat << 'EOF' >> /etc/modules
 i2c-bcm2708 
 i2c-dev

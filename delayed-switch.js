@@ -16,7 +16,7 @@ var Constants = {
  * Creates a new DelayedSwitch.
  *
  * @param: config has one property.
- * - delay: the delay in milliseconds after which the switch is switchable again.
+ * - delayInMillis: the delay in milliseconds after which the switch is switchable again.
  * - initialState: the initial state of the switch. If it is flipped on the 'onCallback'
  *                 function will be called. 
  * @param: onCallback is a function that will be called when the switch is switched
@@ -30,7 +30,7 @@ function DelayedSwitch(config, onCallback, offCallback) {
 	this.onCallback = onCallback;
 	this.offCallback = offCallback;
 	this.switchBlocked = false;
-	this.delay = config.delay;
+	this.delayInMillis = config.delayInMillis;
 	flipSwitchIfNeeded(this);
 }
 
@@ -66,7 +66,7 @@ function delaySwitch(self) {
 	setTimeout(function() {
 		flipSwitchIfNeeded(self);
 		unblockSwitch(self);
-	}, self.delay);
+	}, self.delayInMillis);
 }
 
 function flipSwitchIfNeeded(self) {
