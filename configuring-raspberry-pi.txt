@@ -66,3 +66,10 @@ gpsmon /dev/rfcomm0
 curl -sLS https://apt.adafruit.com/add | sudo bash
 sudo apt-get install node
 npm install node-gpsd onoff keypress i2c
+
+# Copy all the JavaScript code, configurations files and scripts to the Raspberry PI
+scp *js pi@cato
+scp *json pi@cato
+scp start-* pi@cato
+# and add the following line to the crontab -e
+@startup ........
