@@ -65,6 +65,7 @@ gpsmon /dev/rfcomm0
 # Install nodejs
 curl -sLS https://apt.adafruit.com/add | sudo bash
 sudo apt-get install node
+# Install used modules
 npm install node-gpsd onoff keypress i2c
 
 # Copy all the JavaScript code, configurations files and scripts to the Raspberry PI
