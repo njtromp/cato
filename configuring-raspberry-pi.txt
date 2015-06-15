@@ -56,8 +56,10 @@ bluez-simple-agent hci0 00:02:76:C8:24:79
 sudo apt-get install gpsd gpsd-clients
 
 # Start the GPSD daemon
-# -b = read-only, -G listen on all interfaces
-gpsd -b -G /dev/rfcomm0
+# -b read-only
+# -G listen on all interfaces
+# -n don't wait for clients to connect (start polling the GPS immediately)
+gpsd -b -G -n /dev/rfcomm0
 
 # Check if everything is working properly (Optional)
 gpsmon /dev/rfcomm0
@@ -74,3 +76,15 @@ scp *json pi@cato
 scp start-* pi@cato
 # and add the following line to the crontab -e
 @startup ........
+
+# Install dnsmasq
+sudo apt-get install dnsmasq
+
+#Configure DNS DHCP
+# TODO add configuration
+
+# Install hostapd for Raspberry PI
+# TODO decribe steps
+
+# Configure hostapd
+# TODO add configuration

@@ -12,7 +12,10 @@ sleep 2
 #sleep 2
 
 # Start the GPSD Daemon
-/usr/sbin/gpsd -nG /dev/rfcomm0 
+# -n read only mode
+# -b start polling immediately
+# -G listen on all interfaces
+/usr/sbin/gpsd -n -b -G /dev/rfcomm0 
 sleep 10
 
 # Start the rest of the system
