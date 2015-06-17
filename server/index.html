@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Cato log</title>
+	</head>
+	<body>
+		<div id="speed"><span>0.0</span></div>
+		<!-- TODO move script to the head tag -->
+		<!-- Try using Bootstrap for responsive version -->
+		<script src="/jquery-1.10.2.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+			var speedGauge = $('#speed span');
+			var socket = io('http://cato:8080');
+			socket.on('speed', function (speed) {
+				speedGauge.text(speed.knots);
+			});
+		</script>
+	</body>
+</html>
