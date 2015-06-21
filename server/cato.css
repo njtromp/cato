@@ -1,0 +1,14 @@
+body {
+	background-color: black;
+	color: white;
+}
+
+.container-fluid {
+//	background-color: black;
+//	color: white;
+}
+
+#speed {
+	text-align: center;
+	font-size: 100px;
+}

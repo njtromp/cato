@@ -1,13 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Cato log</title>
-		<!-- Try using Bootstrap for responsive version -->
-		<script src="/jquery-1.10.2.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
+		<title>Cato info</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="/bootstrap-3.3.4.min.css">
+		<link rel="stylesheet" type="text/css" href="/cato.css">
+		<script src="/jquery-1.11.3.min.js"></script>
+		<script src="/bootstrap-3.3.4.min.js"></script>
 	</head>
 	<body>
-		<h1><div id="speed"><span>0.0</span></div></h1>
+
+		<div class="container-fluid">
+			<div id="speed">
+				<span>0.0</span>
+			</div>
+		</div>
+
+		<script src="/socket.io/socket.io.js"></script>
 		<script>
 			var speedGauge = $('#speed span');
 			var socket = io('http://localhost:8080');
