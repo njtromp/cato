@@ -1,8 +1,9 @@
-
 /**
  * This program can be used to calibrate the speed to RPM table that is stored in 'calibrarion.json'.
  * With the left and right arrow keys different speeds are selected. With the up and down arrow keys
- * the RPM is controlled. Ctrl+S saves the current configuration to the 'calibrartion.json' file.
+ * the RPM is controlled, using 'CTRL' while adjusting the speed uses 10 RPM for increasing and 
+ * decreasing. Ctrl+S saves the current configuration to the 'calibrartion.json' file. Ctrl+Q stops
+ * the motor and quits the application.
  */
 
 "use strict";
