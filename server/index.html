@@ -12,17 +12,26 @@
 	<body>
 
 		<div class="container-fluid">
-			<div id="speed">
-				<span>0.0</span>
+			<div id="cur-speed">
+				<b><span>0.0</span></b>
+			</div>
+			<div id="avg-speed">
+				<b><span>0.0</span></b>
 			</div>
 		</div>
 
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
-			var speedGauge = $('#speed span');
 			var socket = io('http://localhost:8080');
-			socket.on('speed', function (speed) {
-				speedGauge.text(speed.knots);
+
+			var curSpeedGauge = $('#cur-speed span');
+			socket.on('cur-speed', function (speed) {
+				curSpeedGauge.text(speed.knots);
+			});
+
+			var avgSpeedGauge = $('#avg-speed span');
+			socket.on('avg-speed', function (speed) {
+				avgSpeedGauge.text(speed.knots);
 			});
 		</script>
 	</body>

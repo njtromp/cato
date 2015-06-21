@@ -29,7 +29,10 @@ function handler (request, response) {
 
 // Mimic varying speed
 setInterval(function() {
-    io.emit('speed', { 
-        knots: (Math.round(Math.random()*6.0*10) / 10.0 ).toFixed(1)
+    io.emit('cur-speed', { 
+        knots: (Math.random()*6.0).toFixed(1)
+    });
+    io.emit('avg-speed', { 
+        knots: (Math.random()*6.0).toFixed(1)
     });
 }, 1000);

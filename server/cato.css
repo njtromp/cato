@@ -4,11 +4,9 @@ body {
 }
 
 .container-fluid {
-//	background-color: black;
-//	color: white;
 }
 
-#speed {
+#cur-speed, #avg-speed {
 	text-align: center;
 	font-size: 100px;
 }
