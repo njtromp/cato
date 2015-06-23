@@ -11,20 +11,40 @@ var fs = require('fs');
 app.listen(8080);
 
 function handler (request, response) {
-    // Only serve files if they exist
     console.log(request.url);
-    fs.exists(__dirname + request.url, function() {
-        fs.readFile(__dirname + request.url,
-        function (err, data) {
-            if (err) {
-                response.writeHead(500);
-                return response.end('Error loading ' + request.url);
-              }
 
-            response.writeHead(200);
-            response.end(data);
+    if (firstVisit(request.url)) {
+        redirectToIndexPage(response);
+    } else {
+        var fileName = request.url;
+        // Append '.html' if the name doesn't contains '.'.
+        if (fileName.indexOf('.') < 0) {
+            fileName += '.html'; 
+        }
+        fileName = __dirname + fileName
+        // Only serve files if they exist
+        fs.exists(fileName, function() {
+            fs.readFile(fileName,
+            function (err, data) {
+                if (err) {
+                    response.writeHead(500);
+                    return response.end('Error loading ' + request.url);
+                  }
+
+                response.writeHead(200);
+                response.end(data);
+            });
         });
-    });
+    }
+}
+
+function firstVisit(requestURL) {
+    return '/' == requestURL;
+}
+
+function redirectToIndexPage(response) {
+    response.writeHead(302, {'Location': '/info'});
+    response.end();
 }
 
 // Mimic varying speed
