@@ -6,8 +6,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="/bootstrap-3.3.4.min.css">
 		<link rel="stylesheet" type="text/css" href="/cato.css">
-		<script src="/jquery-1.11.3.min.js"></script>
-		<script src="/bootstrap-3.3.4.min.js"></script>
 	</head>
 	<body>
 
@@ -20,9 +18,11 @@
 			</div>
 		</div>
 
+		<script src="/jquery-1.11.3.min.js"></script>
+		<script src="/bootstrap-3.3.4.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
-			var socket = io('http://localhost:8080');
+			var socket = io();
 
 			var curSpeedGauge = $('#cur-speed span');
 			socket.on('cur-speed', function (speed) {
