@@ -10,6 +10,7 @@ var PWM = require("./pwm");
 var PulseSensor = require('./pulse-sensor');
 var RPMController = require('./rpm-controller');
 var GPSDListener = require('./gpsd-listener');
+var RawNMEAListener = require('./raw-nmea-listener');
 var LogController =  require('./log-controller');
 var DelayedSwitch = require('./delayed-switch');
 var GPIO = require('onoff').Gpio;
@@ -37,6 +38,11 @@ Factory.prototype.createLogController = function() {
     var logController = new LogController(rpmController);
     var gpsdListener = new GPSDListener(config.GPSD, logController);
     return logController;
+}
+
+Factory.prototype.createRawNMEAListener = function() {
+    var rawNMEAListener = new RawNMEAListener(config.GPSD);
+    return rawNMEAListener;
 }
 
 function createPowerSwitch() {
