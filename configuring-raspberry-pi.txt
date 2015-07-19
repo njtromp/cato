@@ -88,3 +88,14 @@ sudo apt-get install dnsmasq
 
 # Configure hostapd
 # TODO add configuration
+
+# Add the following line to /etc/hostpad/hostapd.conf
+cat << 'EOF' >> /etc/hostpad/hostapd.conf
+country_code=NL
+EOF
+
+cat << 'EOF' >> /etc/modprobe.d/8182cu.conf
+# Disable power saving
+#options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
+options 8192cu rtw_power_mgnt=0 rtw_enusbss=1 rtw_ips_mode=1
+EOF
