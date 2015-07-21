@@ -4,8 +4,8 @@
  * switched on at step 0 leaving only the off-step to be specified by the client.
  * The PCA9685 has a full on and a full off mode per channel. These modes will be chosen automatically
  * if applicable.
- * When the off-step of a channel is set to 0, the channel is switched off.
- * When the off-step of a channel is set to 4096, the channel is switched on. 
+ * When the off-step for a channel is set to 0, the channel is switched off.
+ * When the off-step for a channel is set to 4096, the channel is switched on. 
  */
 
 "use strict";

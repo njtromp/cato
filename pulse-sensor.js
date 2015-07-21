@@ -1,6 +1,6 @@
 /**
  * This module measures the pulselength of a IR sensor that detects the rotation
- * of disc (whith intermitted holes) that is attached to a electronic motor. 
+ * of a disc (whith intermitted holes) that is attached to a electronic motor. 
  */
 
 "use strict";
