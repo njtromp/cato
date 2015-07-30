@@ -10,7 +10,7 @@ var MOTOR_CHANNEL = 0;
 var FULL_STOP = 0;
 var FULL_AHEAD = 4096;
 
-function RPMController(config, pwm, pulseSensor, powerSwitch) {
+function RPMController(config, pwm, pulseSensor, voltageReductionSwitch) {
     this.targetRPM = 0;
     this.offStep = 0;
     this.debug = config.debug;
@@ -19,9 +19,10 @@ function RPMController(config, pwm, pulseSensor, powerSwitch) {
     this.adjustmentThreshold = config.adjustmentThreshold;
     this.smallStepChange = config.smallStepChange;
     this.largeStepChange = config.largeStepChange;
+    this.voltageReductionFactor = config.voltageReductionFactor;
     this.pwm = pwm;
     this.pulseSensor = pulseSensor;
-    this.powerSwitch = powerSwitch;
+    this.voltageReductionSwitch = voltageReductionSwitch;
     if (this.debug) {
         console.log('About to take control over the RPM...');
     }
@@ -84,11 +85,19 @@ RPMController.prototype.controlRPM = function() {
     }
     
     if (this.targetRPM >= this.powerThreshold) {
-        this.powerSwitch.switchOff();
+        this.voltageReductionSwitch.switchOff();
     } else {
-        this.powerSwitch.switchOn();
+        this.voltageReductionSwitch.switchOn();
     }
     this.pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
+}
+
+RPMController.prototype.switchingToLowVoltage = function() {
+    this.offStep *= this.voltageReductionFactor;
+}
+
+RPMController.prototype.switchToingHighVoltage = function() {
+    this.offStep /= this.voltageReductionFactor;
 }
 
 function determineRPM(pulseLength) {
