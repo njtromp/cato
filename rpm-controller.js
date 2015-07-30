@@ -85,19 +85,27 @@ RPMController.prototype.controlRPM = function() {
     }
     
     if (this.targetRPM >= this.powerThreshold) {
-        this.voltageReductionSwitch.switchOff();
+        this.voltageReductionSwitch.switchOff(this);
     } else {
-        this.voltageReductionSwitch.switchOn();
+        this.voltageReductionSwitch.switchOn(this);
     }
     this.pwm.setChannelOffStep(MOTOR_CHANNEL, this.offStep);
 }
 
 RPMController.prototype.switchingToLowVoltage = function() {
-    this.offStep *= this.voltageReductionFactor;
+    if (this.debug) {
+        console.log('Increasing the offStep due to switching to low voltage mode.');
+    }
+    this.offStep = Math.floor(this.offStep * this.voltageReductionFactor);
+    this.controlRPM();
 }
 
-RPMController.prototype.switchToingHighVoltage = function() {
-    this.offStep /= this.voltageReductionFactor;
+RPMController.prototype.switchingToHighVoltage = function() {
+    if (this.debug) {
+        console.log('Reducing the offStep due to switching to high voltage mode.');
+    }
+    this.offStep = Math.floor(this.offStep / this.voltageReductionFactor);
+    this.controlRPM();
 }
 
 function determineRPM(pulseLength) {

@@ -46,14 +46,18 @@ function createVoltageReductionSwitch() {
             console.log('Flipping the power switch to ON');
         }
         voltageReductionSwitch.writeSync(Constants.ON);
-        rpmController.switchingToLowVoltage();
+        if (rpmController) {
+            rpmController.switchingToLowVoltage();
+        }
     };
     var offFunction = function(rpmController) {
         if (config.PowerSwitch.debug) {
             console.log('Flipping the power switch to OFF');
         }
         voltageReductionSwitch.writeSync(Constants.OFF);
-        rpmController.switchingToHighVoltage()
+        if (rpmController) {
+            rpmController.switchingToHighVoltage()
+        }
     };
     // Wrap the actual powerswitch in a delayed switch
     // this will ensure that the power is not switched on and off every control interval
