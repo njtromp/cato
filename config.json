@@ -18,6 +18,7 @@
         "adjustmentThreshold": 200,
         "smallStepChange": 10,
         "largeStepChange": 100,
+        "voltageReductionFactor": 3.33,
         "debug": false
     },
     "GPSD": {
