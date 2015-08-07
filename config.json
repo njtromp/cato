@@ -12,12 +12,13 @@
         "activeLevel": 1
     },
     "RPM": {
-        "repeatInterval": 300,
-        "startStep": 1000,
+        "repeatInterval": 500,
+        "startStep": 1200,
         "powerThreshold": 300,
         "adjustmentThreshold": 200,
         "smallStepChange": 10,
         "largeStepChange": 100,
+        "voltageReductionFactor": 3.33,
         "debug": false
     },
     "GPSD": {

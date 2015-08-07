@@ -80,7 +80,7 @@ GPSDListener.prototype.clearUnstableFixMonitor = function() {
 GPSDListener.prototype.startUnstableFixMonitor = function() {
 	if (this.unstableFixMonitor == null) {
 		if (this.debug) {
-			console.log('Activating a ');
+			console.log('Activating a unstableFixMonitor.');
 		}
 		// Make sure the speed is set to 0 if we don't get a stable fix within 5 seconds.
 		var _this = this;

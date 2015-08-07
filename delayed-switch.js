@@ -34,24 +34,24 @@ function DelayedSwitch(config, onCallback, offCallback) {
 	flipSwitchIfNeeded(this);
 }
 
-DelayedSwitch.prototype.switchOn = function() {
-	requestFlip(this, Constants.ON);
+DelayedSwitch.prototype.switchOn = function(rpmController) {
+	requestFlip(this, Constants.ON, rpmController);
 }
 
-DelayedSwitch.prototype.switchOff = function() {
-	requestFlip(this, Constants.OFF);
+DelayedSwitch.prototype.switchOff = function(rpmController) {
+	requestFlip(this, Constants.OFF, rpmController);
 }
 
-function requestFlip(self, newState) {
+function requestFlip(self, newState, rpmController) {
 	self.requestedState = newState;
 	if (!self.switchBlocked) {
-		startDelayedSwitch(self);
+		startDelayedSwitch(self, rpmController);
 	}
 }
 
-function startDelayedSwitch(self) {
+function startDelayedSwitch(self, rpmController) {
 	blockSwitch(self);
-	delaySwitch(self);
+	delaySwitch(self, rpmController);
 }
 
 function blockSwitch(self) {
@@ -62,20 +62,20 @@ function unblockSwitch(self) {
 	self.switchBlocked = false;
 }
 
-function delaySwitch(self) {
+function delaySwitch(self, rpmController) {
 	setTimeout(function() {
-		flipSwitchIfNeeded(self);
+		flipSwitchIfNeeded(self, rpmController);
 		unblockSwitch(self);
 	}, self.delayInMillis);
 }
 
-function flipSwitchIfNeeded(self) {
+function flipSwitchIfNeeded(self, rpmController) {
 	if (self.switchState != self.requestedState) {
 		self.switchState = self.requestedState;
 		if (self.switchState == Constants.ON) {
-			self.onCallback();
+			self.onCallback(rpmController);
 		} else {
-			self.offCallback();
+			self.offCallback(rpmController);
 		}
 	}
 }

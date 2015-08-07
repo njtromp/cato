@@ -25,8 +25,8 @@ function Factory() {}
 Factory.prototype.createRPMController = function() {
 	var pwm = new PWM(config.PWM);
 	var pulseSensor = new PulseSensor(config.PulseSensor);
-    var powerSwitch = createPowerSwitch();
-	return new RPMController(config.RPM, pwm, pulseSensor, powerSwitch);
+    var voltageReductionSwitch = createVoltageReductionSwitch();
+	return new RPMController(config.RPM, pwm, pulseSensor, voltageReductionSwitch);
 }
 
 /**
@@ -45,19 +45,25 @@ Factory.prototype.createRawNMEAListener = function() {
     return rawNMEAListener;
 }
 
-function createPowerSwitch() {
-    var powerSwitch = new GPIO(config.PowerSwitch.switchPin, 'out');
-    var onFunction = function() {
+function createVoltageReductionSwitch() {
+    var voltageReductionSwitch = new GPIO(config.PowerSwitch.switchPin, 'out');
+    var onFunction = function(rpmController) {
         if (config.PowerSwitch.debug) {
             console.log('Flipping the power switch to ON');
         }
-        powerSwitch.writeSync(Constants.ON);
+        voltageReductionSwitch.writeSync(Constants.ON);
+        if (rpmController) {
+            rpmController.switchingToLowVoltage();
+        }
     };
-    var offFunction = function() {
+    var offFunction = function(rpmController) {
         if (config.PowerSwitch.debug) {
             console.log('Flipping the power switch to OFF');
         }
-        powerSwitch.writeSync(Constants.OFF);
+        voltageReductionSwitch.writeSync(Constants.OFF);
+        if (rpmController) {
+            rpmController.switchingToHighVoltage()
+        }
     };
     // Wrap the actual powerswitch in a delayed switch
     // this will ensure that the power is not switched on and off every control interval

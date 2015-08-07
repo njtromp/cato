@@ -11,6 +11,7 @@ module.exports = {
 	enableButton: function() {
 		console.log('Installing shutdown listener.');
 		var Gpio = require('onoff').Gpio,
+			// TODO move the pin-number into config.json 
   			button = new Gpio(24, 'in', 'rising');
   			button.watch(function(err, value) {
   				if (value == 1 && secondPressWithin2Seconds()) {
