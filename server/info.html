@@ -13,8 +13,11 @@
 			<div id="cur-speed">
 				<b><span>0.0</span></b>
 			</div>
-			<div id="avg-speed">
-				<b><span>0.0</span></b>
+			<div id="heading">
+				<b><span>0</span></b>
+			</div>
+			<div id="location">
+				<b><span id='latitude'>00S</span>&nbsp;<span id='longitude'>000W</span></b>
 			</div>
 		</div>
 
@@ -25,13 +28,15 @@
 			var socket = io();
 
 			var curSpeedGauge = $('#cur-speed span');
-			socket.on('cur-speed', function (speed) {
-				curSpeedGauge.text(speed.knots);
-			});
+			var headingGauge = $('#heading span');
+			var latitudeGauge = $('#location span#latitude');
+			var longitudeGauge = $('#location span#longitude');
 
-			var avgSpeedGauge = $('#avg-speed span');
-			socket.on('avg-speed', function (speed) {
-				avgSpeedGauge.text(speed.knots);
+			socket.on('update', function (update) {
+				curSpeedGauge.text(update.speed);
+				headingGauge.text(update.heading);
+				latitudeGauge.text(update.location.latitude);
+				longitudeGauge.text(update.location.longitude);
 			});
 		</script>
 	</body>

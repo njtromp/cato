@@ -19,32 +19,16 @@ function GPSDListener(config, logController) {
 	this.gpsdListener = new GPSD.Listener({
 	    port: config.port,
 	    hostname: config.hostname,
-	    logger:  {
-	        info: function() {},
-	        warn: console.warn,
-	        error: console.error
-	    },
 	    parse: true
 	});
 	var _this = this;
 	this.gpsdListener.connect(function() {
-	    console.log('Connected to GPSD server');
+	    console.log('Connected to GPSD server (listening for GPSD messages)');
 	    _this.gpsdListener.watch();
 	});
 	this.gpsdListener.on('TPV', function(tpvData) {
 		_this.processTPVData(tpvData);
 	});
-
-	// FOR TESTING PURPOSE ONLY!!!!
-	if (this.mockSpeed) {
-		setInterval(function() {
-			var tpvData = {
-				"mode": 3,
-				"speed": Math.random() * 4.0
-			}
-			_this.processTPVData(tpvData);
-		}, this.mockInterval);
-	}
 }
 
 /**
@@ -96,7 +80,7 @@ function fixIsStable(tpvData) {
 }
 
 function speedAvailable(tpvData) {
-	return tpvData.speed ? true : false;
+	return tpvData.hasOwnProperty('speed');
 }
 
 module.exports = GPSDListener;

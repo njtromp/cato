@@ -24,8 +24,6 @@
     "GPSD": {
         "port": 2947,
         "hostname": "localhost",
-        "mockSpeed": false,
-        "mockInterval": 3000,
         "debug": false
     },
     "PowerSwitch": {
@@ -33,5 +31,7 @@
         "delayInMillis": 5000,
         "initialState": 1,
         "debug": false
+    },
+    "Server": {
     }
 }

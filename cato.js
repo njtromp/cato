@@ -15,3 +15,6 @@ shutdown.enableButton();
 var Factory = require('./factory');
 var factory = new Factory();
 var logController = factory.createLogController();
+
+// Start the information server
+var server = factory.createServer();

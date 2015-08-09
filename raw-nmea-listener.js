@@ -5,8 +5,7 @@
 "use strict";
 
 var GPSD = require('node-gpsd');
-
-var FROM_METERS_PER_SECOND_TO_KNOTS = 3600.0 / 1852.0;
+var nmeaParser = require('nmea-0183');
 
 function RawNMEAListener(config, logController) {
 	this.debug = config.debug;
@@ -17,49 +16,50 @@ function RawNMEAListener(config, logController) {
 	this.gpsdListener = new GPSD.Listener({
 	    port: config.port,
 	    hostname: config.hostname,
-	    logger:  {
-	        info: function() {},
-	        warn: console.warn,
-	        error: console.error
-	    },
 	    parse: false
 	});
+
 	var _this = this;
 	this.gpsdListener.connect(function() {
-	    console.log('Connected to GPSD server');
-	    _this.gpsdListener.watch();
+	    console.log('Connected to GPSD server (listening for NMEA messages)');
+		_this.gpsdListener.watch({class: 'WATCH', nmea: true});
 	});
-	this.gpsdListener.on('raw', function(rawMessage) {
-		_this.processrawMessage(rawMessage);
+	this.gpsdListener.on('raw', function(nmeaMessage) {
+		_this.processNMEAMessage(nmeaMessage);
 	});
 
-	// FOR TESTING PURPOSE ONLY!!!!
-	if (this.mockSpeed) {
-		setInterval(function() {
-			// TODO create raw message!!
-			var rawMessage = {
-				"mode": 3,
-				"speed": Math.random() * 4.0
-			}
-			_this.processRawMessage(rawMessage);
-		}, this.mockInterval);
-	}
+}
+
+RawNMEAListener.prototype.setCallback = function(callback) {
+	this.callback = callback;
 }
 
 /**
  * Private
  */
-RawNMEAListener.prototype.processRawMessage = function(rawMessage) {
-	if (fixIsStable(rawMessage)) {
+RawNMEAListener.prototype.processNMEAMessage = function(rawMessage) {
+	if (this.debug) {
+		console.log('Pure NMEA: ' + rawMessage);
+	}
+	if (isPotentialNMEAMessage(rawMessage)) {
+		var nmeaMessage = nmeaParser.parse(rawMessage);
 		if (this.debug) {
-			console.log('We have a stable fix, ' + rawMessage.speed);
+			console.log('Parsed NMEA: ' + nmeaMessage);
+			console.log(nmeaMessage);
 		}
-		if (speedAvailable(rawMessage)) {
-			this.clearUnstableFixMonitor();
-			console.log(rawMessage);
+		if (isRMCSentence(nmeaMessage)) {		
+			if (this.debug) {
+				console.log('We have a valid NMEA RMC message.');
+			}
+			if (speedAvailable(nmeaMessage)) {
+				this.clearUnstableFixMonitor();
+				if (this.callback !== undefined) {
+					this.callback(nmeaMessage);
+				}
+			} else {
+				this.startUnstableFixMonitor();
+			}
 		}
-	} else {
-		this.startUnstableFixMonitor();
 	}
 }
 
@@ -79,7 +79,7 @@ RawNMEAListener.prototype.clearUnstableFixMonitor = function() {
 RawNMEAListener.prototype.startUnstableFixMonitor = function() {
 	if (this.unstableFixMonitor == null) {
 		if (this.debug) {
-			console.log('Activating a ');
+			console.log('Activating a unstableFixMonitor.');
 		}
 		// Make sure the speed is set to 0 if we don't get a stable fix within 5 seconds.
 		var _this = this;
@@ -90,12 +90,17 @@ RawNMEAListener.prototype.startUnstableFixMonitor = function() {
 	}
 }
 
-function fixIsStable(rawMessage) {
-	return true;
+function isPotentialNMEAMessage(rawMessage) {
+	// A NMEA sentence starts at least with '&GP???' hence the minimum location of the checksum marker of 6
+	return rawMessage !== undefined && rawMessage.indexOf('$GP') == 0 && rawMessage.indexOf('*') > 6;
 }
 
-function speedAvailable(rawMessage) {
-	return true;
+function isRMCSentence(nmeaMessage) {
+	return nmeaMessage.valid == 'A' && nmeaMessage.id == 'GPRMC';
+}
+
+function speedAvailable(nmeaMessage) {
+	return nmeaMessage.hasOwnProperty('speed');
 }
 
 module.exports = RawNMEAListener;

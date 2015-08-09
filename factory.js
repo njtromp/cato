@@ -14,7 +14,8 @@ var RawNMEAListener = require('./raw-nmea-listener');
 var LogController =  require('./log-controller');
 var DelayedSwitch = require('./delayed-switch');
 var GPIO = require('onoff').Gpio;
-var config = require('./config.json'); 
+var config = require('./config.json');
+var InfoServer = require('./server/server')
 
 function Factory() {}
 
@@ -43,6 +44,12 @@ Factory.prototype.createLogController = function() {
 Factory.prototype.createRawNMEAListener = function() {
     var rawNMEAListener = new RawNMEAListener(config.GPSD);
     return rawNMEAListener;
+}
+
+Factory.prototype.createServer = function() {
+    var infoServer = new InfoServer(config.Server, this.createRawNMEAListener());
+    infoServer.startServer();
+    //infoServer.mockSpeed();
 }
 
 function createVoltageReductionSwitch() {

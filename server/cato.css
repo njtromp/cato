@@ -6,7 +6,12 @@ body {
 .container-fluid {
 }
 
-#cur-speed, #avg-speed {
+#cur-speed, #heading {
 	text-align: center;
 	font-size: 100px;
+}
+
+#location {
+	text-align: center;
+	font-size: 60px;
 }
