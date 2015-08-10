@@ -33,5 +33,7 @@
         "debug": false
     },
     "Server": {
+        "port": 8080,
+        "debug": false
     }
 }

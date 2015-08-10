@@ -18,10 +18,12 @@ InfoServer.prototype.startServer = function() {
 
     this.rawNMEAListener.setCallback(updateSpeed);
 
-    app.listen(8080);
+    app.listen(this.config.port);
 
     function handler (request, response) {
-        console.log(request.url);
+        if (_this.config.debug) {
+            console.log(request.url);
+        }
 
         if (firstVisit(request.url)) {
             redirectToIndexPage(response);
@@ -61,16 +63,20 @@ InfoServer.prototype.startServer = function() {
         var speed = rmcMessage.speed.toFixed(2);
         var heading = rmcMessage.course.toFixed(0);
         var location = {latitude: '', longitude: ''};
-        location.latitude = format('NS', rmcMessage.latitude);
-        location.longitude = format('EW', rmcMessage.longitude);
+        location.latitude = format('00', 'NS', rmcMessage.latitude);
+        location.longitude = format('000', 'EW', rmcMessage.longitude);
         _this.io.emit('update', { speed: speed, heading: heading, location: location });
     }
 
-    function format(rumbs, value) {
+    function format(padding, rumbs, value) {
         var parts = value.split('.');
-        var degrees = parts[0];
+        var degrees = Number(parts[0]);
         var minutes = Number('0.' + parts[1]) * 60.0;
-        return degrees.toString() + '°' + minutes.toFixed(4) + rumbs.charAt(value >= 0 ? 0 : 1);
+        return pad(padding, Math.abs(degrees)) + '°' + (minutes < 10 ? '0' : '') + minutes.toFixed(4) + rumbs.charAt(degrees >= 0 ? 0 : 1);
+    }
+
+    function pad(padding, value) {
+        return (padding + value).slice(-padding.length);
     }
 
     console.log('Server should be started.');
