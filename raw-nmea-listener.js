@@ -44,7 +44,7 @@ RawNMEAListener.prototype.processNMEAMessage = function(rawMessage) {
 	if (isPotentialNMEAMessage(rawMessage)) {
 		var nmeaMessage = nmeaParser.parse(rawMessage);
 		if (this.debug) {
-			console.log('Parsed NMEA: ' + nmeaMessage);
+			console.log('Parsed NMEA:');
 			console.log(nmeaMessage);
 		}
 		if (isRMCSentence(nmeaMessage)) {		
