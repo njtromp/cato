@@ -58,7 +58,19 @@ InfoServer.prototype.startServer = function() {
     }
 
     function updateSpeed(rmcMessage) {
-        _this.io.emit('update', { speed: rmcMessage.speed.toFixed(2), heading: rmcMessage.course, location: {latitude: rmcMessage.latitude, longitude: rmcMessage.longitude} });
+        var speed = rmcMessage.speed.toFixed(2);
+        var heading = rmcMessage.course.toFixed(0);
+        var location = {latitude: '', longitude: ''};
+        location.latitude = format('NS', rmcMessage.latitude);
+        location.longitude = format('EW', rmcMessage.longitude);
+        _this.io.emit('update', { speed: speed, heading: heading, location: location });
+    }
+
+    function format(rumbs, value) {
+        var parts = value.split('.');
+        var degrees = parts[0];
+        var minutes = Number('0.' + parts[1]) * 60.0;
+        return degrees.toString() + '°' + minutes.toFixed(4) + rumbs.charAt(value >= 0 ? 0 : 1);
     }
 
     console.log('Server should be started.');
