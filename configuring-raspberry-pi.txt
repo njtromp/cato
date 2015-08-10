@@ -100,6 +100,18 @@ cat << 'EOF' >> /etc/modprobe.d/8182cu.conf
 options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
 EOF
 
+# Install Apache HTTPD
+sudo apt-get update
+sudo apt-get install apache2
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+
+# Add reverse proxy configuration after the last <Directory> element
+# sudo vi /etc/apache2/sites-enabled/000-default
+#        ProxyPass / http://cato:8080/
+#        ProxyPassReverse / http://cato:8080/
+# And restart Apache
+sudo service apache2 restart
 
 # RPM 299, 5V  => Offstep = 1900
 # RPM 301, 12V => Offstep = 565
