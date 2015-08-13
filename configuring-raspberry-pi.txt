@@ -22,7 +22,7 @@ sudo apt-get install bluetooth bluez-utils blueman i2c-tools
 
 hcitool scan
 
-# Take not of the MAC-address and the name
+# Take note of the MAC-address and the name
 #   00:02:76:C8:24:79   Nokia LD-3W
 
 # Add a rfcomm entry for the GPS device to /etc/bluetooth/rfcomm.conf
@@ -111,7 +111,7 @@ sudo a2enmod proxy_http
 #        ProxyPass / http://cato:8080/
 #        ProxyPassReverse / http://cato:8080/
 # And restart Apache
-sudo service apache2 restart
+# sudo service apache2 restart
 
 # RPM 299, 5V  => Offstep = 1900
 # RPM 301, 12V => Offstep = 565

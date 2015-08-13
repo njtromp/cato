@@ -15,7 +15,7 @@ var LogController =  require('./log-controller');
 var DelayedSwitch = require('./delayed-switch');
 var GPIO = require('onoff').Gpio;
 var config = require('./config.json');
-var InfoServer = require('./server/server')
+var InfoServer = require('./server/info-server')
 
 function Factory() {}
 
@@ -49,7 +49,6 @@ Factory.prototype.createRawNMEAListener = function() {
 Factory.prototype.createServer = function() {
     var infoServer = new InfoServer(config.Server, this.createRawNMEAListener());
     infoServer.startServer();
-    //infoServer.mockSpeed();
 }
 
 function createVoltageReductionSwitch() {
