@@ -17,6 +17,7 @@ I needed some different components that get everything working
 
 ## Hardware
 * a small computer
+* a Bluetooth GPS dongle
 * a USB Bluetooth dongle
 * a motor power control
 * a speed sensor for determining the RPM of the electronic motor 
