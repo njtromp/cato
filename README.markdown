@@ -4,8 +4,8 @@ At the time I bought the boat I did notice that the log (speed indicator) was no
 but that didn't bother me much. There where much, more important things, that needed my
 attention. It is a mechanical VDO SumLog. There where two reasons for the log not to function.
 
-1 a broken inner cable
-2 a rusted impeller that does not turn
+1. a broken inner cable
+2. a rusted impeller that does not turn
 
 These two causes combined with the fact that replacement parts are hard to get your hands on
 and the fact that I had a spare GPS Bluetooth dongle started me thinking. What if I can use
