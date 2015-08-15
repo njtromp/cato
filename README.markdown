@@ -16,8 +16,10 @@ I needed some different components that get everything working
 * a USB Bluetooth dongle
 * a motor power control
 * a speed sensor for determining the RPM of the electronic motor 
+
 ## Software
 * a program that reads the speed information from the GPS dongle and adjusts the speed electronic motor
+
 Back In highschool I played a lot around with electronic components and used a soldering iron
 for repairing TVs, radios etc. The software would be the easiest part since I am a software
 engineer by trade.  
