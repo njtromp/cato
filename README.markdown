@@ -9,10 +9,12 @@ attention. It is a mechanical VDO SumLog. There where two reasons for the log no
 
 These two causes combined with the fact that replacement parts are hard to get your hands on
 and the fact that I had a spare GPS Bluetooth dongle started me thinking. What if I can use
-the GPS dongle for determining the speed and have a small (Raspberry PI) computer control a
-electronic motor that drives the speed gauge?
+the GPS dongle for determining the speed and have a small (like a Raspberry PI) computer
+control a electronic motor that drives the speed gauge?
+
 # Components
 I needed some different components that get everything working
+
 ## Hardware
 * a small computer
 * a USB Bluetooth dongle
@@ -21,12 +23,12 @@ I needed some different components that get everything working
 
 ## Software
 * a program that reads the speed information from the GPS dongle and adjusts the speed of
-the electronic motor.
+the electronic motor
 
 # Putting it all together
 Back In highschool I played a lot around with electronic components and used a soldering iron
-for repairing TVs, radios etc. The software would be the easiest part since I am a software
-engineer by trade.  
+for repairing TVs, radios etc. so with I little luck I should be able to pool it off.
+The software would be the easiest part since I am a software engineer by trade.
 
 # TODO
 * add architectural overview
