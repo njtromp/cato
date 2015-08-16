@@ -26,7 +26,7 @@ I needed some different components to get everything working
 * a motor control unit that is capable of driving the electronic motor
 * a electronic motor that is capable of runnning at 800-900 RPM with enough torque that will
 be attached to the remainder of the inner cable
-* a speed sensor for determining the RPM of the electronic motor
+* a speed sensor for determining the RPM of the electronic motor (needed for feedback loop)
 
 After some Googling and browsing the internet I come to the following wishlist:
 
@@ -34,7 +34,7 @@ After some Googling and browsing the internet I come to the following wishlist:
 * a small Bluetooth dongle
 * a powerfull electro motor (capble of running at 13000 RPM and a torque of about 0.15 Nm)
 * a AdaFruit PWM board based upon a PCA9685 chip
-* a good old power transistor 2N3055 and a zener-diode that will ensure that the voltage that
+* a good old power transistor 2N3055 and a 12V zener-diode that will ensure that the voltage that
 is supplied to the electro motor will stay constant and within the allowed range
 * a power mosfet that will be driven by the AdaFruit board and that will drive the engine
 * a IR photomicrosensor that can be used for detecting the RPM of the electro motor
@@ -60,7 +60,47 @@ used to. After some experimenting and using the soldering iron after 25 years I 
 that seemed to be working. During the first trials I discovered that the electro motor was
 having a difficult time working at low speeds, typically below 200-300 RPM.
 
+## First improvements (dual power setting)
+The problems at low RPMs are caused by the low duty-cycle of the PWM. In order to get the
+duty-cycle up the engine must run using a lower voltage. Because I already was using a very
+simple voltage stabilizing component (the 2N3055 and the zener-diode) it was relatively easy
+to add a extra transistor and a second zener-diode (5V this time) to the existing voltage
+stabilizing circuit. This change needed a software counterpart as well. The program must be
+able to switch between the voltages at which the engine is running. In order to prevent the
+system from switching back and forth between the two different power settings some sort of
+delay was needed between the moment the first switch was needed and the actual switching.
+The first trials with this new power switching module showed that was need for a highly needed
+improvement in the motorcontrol program. When the power setting was switched from low voltage
+(5V) to high voltage (12V) the engine initially was spinning at around 900 RPM (which is equal
+to 9 knots!) while prior to the switch is was running at around 300 RPM. Within seconds
+this was corrected by the feedback loop but it was not the behavior I wanted. Measuring the
+duty-cycle at low voltage and high voltage with the some target RPM showed that there seems
+to be a 10 to 3 ratio between the duty-cycles. With the control program correcting the
+duty-cycle when switching between the power settings lead to a small jitter that is for now
+within acceptable ranges.  
+
+## Second improvements (wireless instruments application)
+As mentioned before I also bought a USB WiFi dongle. The purpose of this dongle is to have
+the Raspberry PI act as a WiFi hotspot that should provide internet connection (through USB
+tethering) to everybody on board as long as my phone as a proper internet connection.
+Besides provinding internet access this lead to the idea of a small web application that
+would use the GPS information for showing the speed and location on any connected device.
+
+# Where to go next
+Up till now everything seems to be working. Everything is still in beta phase but for me it
+is working fine. Because I was not very familiar with NodeJS and used a whole lot of mixed
+quality examples and made some wrong design decisions in the early stages of the project
+the whole project needs a major overhaul.
+
+## Code overhaul
+* write my own NMEA handling/parsing. I haven't found a NodeJS module that handles NMEA
+messages in a way I like (mind you that I am coming from a statically typed language).
+* introduce a easier extensible software architecture (NMEA event bus)
+* get rid of the tightly coupling between NMEA parsing, motor control, powerswitching and
+the instruments application
+
 # TODO
-* add architectural overview
-* restructure the whole code base
-* introduce a NMEA bus to which modules can subribe for receiving messages (events)
+* add some pictures
+* add some electronic diagrams
+* log the NMEA message on the Raspberry PI for later usage by other applications, OpenCPN
+for example
