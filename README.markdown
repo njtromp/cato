@@ -13,26 +13,29 @@ the GPS dongle for determining the speed and have a small (like a Raspberry PI) 
 control a electronic motor that drives the speed gauge?
 
 # Components
-I needed some different components that get everything working
+I needed some different components to get everything working
 
 ## Hardware
 * a small computer
 * a Bluetooth GPS dongle
-* a USB Bluetooth dongle
-* a motor power control
-* a speed sensor for determining the RPM of the electronic motor 
+* a USB Bluetooth dongle, for connecting the GPS to the computer
+* a motor control unit that is capable of driving the electronic motor
+* a electronic motor that is capable of runnning at 800-900 RPM with enough torque that will
+be attached to the remainder of the inner cable
+* a speed sensor for determining the RPM of the electronic motor
 
 ## Software
 * a program that reads the speed information from the GPS dongle and adjusts the speed of
 the electronic motor
 
 # Putting it all together
-Back In highschool I played a lot around with electronic components and used a soldering iron
-for repairing TVs, radios etc. so with I little luck I should be able to pool it off.
-The software would be the easiest part since I am a software engineer by trade.
+Back in highschool I played a lot around with electronic components and used a soldering iron
+for repairing TVs, radios etc. so with I little luck I should still be able to get the
+hardware connected. The software would be the easiest part since I am a software engineer by
+trade.
 
 # TODO
 * add architectural overview
 * add more info to the readme file
 * restructure the whole code base
-* Introduce a NMEA bus to which modules can subribe for receiving messages (events)
+* introduce a NMEA bus to which modules can subribe for receiving messages (events)
