@@ -28,10 +28,9 @@ I needed some different components to get everything working
 be attached to the remainder of the inner cable
 * a speed sensor for determining the RPM of the electronic motor
 
-After some nights Googling and browsing the internet I settled decided that I would by the
-following hardware:
+After some Googling and browsing the internet I come to the following wishlist:
 
-* a Raspberry PI B+ (small, low powerconsumption, 4 USB ports, capable of running Debian)
+* a Raspberry PI B+ (small, low power consumption, 4 USB ports, capable of running Debian)
 * a small Bluetooth dongle
 * a powerfull electro motor (capble of running at 13000 RPM and a torque of about 0.15 Nm)
 * a AdaFruit PWM board based upon a PCA9685 chip
@@ -46,11 +45,11 @@ I also bought a USB WiFi dongle that will be used for providing a small local Wi
 * a program that reads the speed information from the GPS dongle and adjusts the speed of
 the electronic motor
 
-Although I am a Java Software Engineer by trade I wanted to use a language that has a less
-smaller footprint. After experimenting with Python and NodeJS I chose NodeJS. There are a lot
-of modules available for it that integrate with GPSD for example. An other thing that I liked
-is the fact that the JavaScript is compiled to native code prior to running by the V8 JavaScript
-engine.  
+Although I am a Java Software Engineer by trade I wanted to use a language that has a smaller
+footprint. After experimenting with Python and NodeJS I chose NodeJS. There are a lot of 
+modules available for it that integrate with GPSD for example. An other thing that I liked
+is the fact that the JavaScript is compiled to native code prior to running by the V8
+JavaScript engine.  
 
 # Putting it all together
 Back in highschool I played a lot around with electronic components and used a soldering iron
