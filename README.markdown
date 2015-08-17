@@ -28,15 +28,15 @@ I needed some different components to get everything working
 be attached to the remainder of the inner cable
 * a speed sensor for determining the RPM of the electronic motor (needed for feedback loop)
 
-After some Googling and browsing the internet I come to the following wishlist:
+After some Googling and browsing the internet I come to the following shoppinglist:
 
 * a Raspberry PI B+ (small, low power consumption, 4 USB ports, capable of running Debian)
 * a small Bluetooth dongle
 * a powerfull electro motor (capble of running at 13000 RPM and a torque of about 0.15 Nm)
 * a AdaFruit PWM board based upon a PCA9685 chip
+* a power mosfet that will be driven by the AdaFruit board and that will drive the engine
 * a good old power transistor 2N3055 and a 12V zener-diode that will ensure that the voltage that
 is supplied to the electro motor will stay constant and within the allowed range
-* a power mosfet that will be driven by the AdaFruit board and that will drive the engine
 * a IR photomicrosensor that can be used for detecting the RPM of the electro motor
 
 I also bought a USB WiFi dongle that will be used for providing a small local WiFi network.  
@@ -46,10 +46,10 @@ I also bought a USB WiFi dongle that will be used for providing a small local Wi
 the electronic motor
 
 Although I am a Java Software Engineer by trade I wanted to use a language that has a smaller
-footprint. After experimenting with Python and NodeJS I chose NodeJS. There are a lot of 
-modules available for it that integrate with GPSD for example. An other thing that I liked
-is the fact that the JavaScript is compiled to native code prior to running by the V8
-JavaScript engine.  
+memory footprint. After experimenting with Python and NodeJS I chose NodeJS. There are a
+lot of modules available for it that integrate with GPSD for example. An other thing that I
+like is the fact that the JavaScript is compiled to native code by the V8 engine prior to
+running the code.
 
 # Putting it all together
 Back in highschool I played a lot around with electronic components and used a soldering iron
@@ -69,15 +69,15 @@ stabilizing circuit. This change needed a software counterpart as well. The prog
 able to switch between the voltages at which the engine is running. In order to prevent the
 system from switching back and forth between the two different power settings some sort of
 delay was needed between the moment the first switch was needed and the actual switching.
-The first trials with this new power switching module showed that was need for a highly needed
-improvement in the motorcontrol program. When the power setting was switched from low voltage
-(5V) to high voltage (12V) the engine initially was spinning at around 900 RPM (which is equal
-to 9 knots!) while prior to the switch is was running at around 300 RPM. Within seconds
-this was corrected by the feedback loop but it was not the behavior I wanted. Measuring the
-duty-cycle at low voltage and high voltage with the some target RPM showed that there seems
-to be a 10 to 3 ratio between the duty-cycles. With the control program correcting the
-duty-cycle when switching between the power settings lead to a small jitter that is for now
-within acceptable ranges.  
+The first trials with this new power switching module showed a flaw in the motorcontrol
+program. When the power setting was switched from low voltage (5V) to high voltage (12V)
+the engine initially was spinning at around 900 RPM (which is equal to 9 knots!) while
+prior to the switch is was running at around 300 RPM. Within seconds this was corrected by
+the feedback loop but it was not the behavior I wanted. Measuring the duty-cycle at low
+voltage and high voltage with the some target RPM showed that there seems to be a 10 to 3
+ratio between the duty-cycles. With the control program correcting the duty-cycle when
+switching between the power settings lead to a small jitter that is for now within
+acceptable ranges.  
 
 ## Second improvements (wireless instruments application)
 As mentioned before I also bought a USB WiFi dongle. The purpose of this dongle is to have
