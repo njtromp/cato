@@ -7,10 +7,6 @@
 var correctClock = require('./correct-clock');
 correctClock.start();
 
-// Enable the shutdown button.
-var shutdown = require('./shutdown');
-shutdown.enableButton();
-
 // Start the log-controller
 var Factory = require('./factory');
 var factory = new Factory();

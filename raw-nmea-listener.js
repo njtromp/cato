@@ -91,7 +91,7 @@ RawNMEAListener.prototype.startUnstableFixMonitor = function() {
 }
 
 function isPotentialNMEAMessage(rawMessage) {
-	// A NMEA sentence starts at least with '&GP???' hence the minimum location of the checksum marker of 6
+	// A NMEA sentence starts at least with '$GP???' hence the minimum location of the checksum marker of 6
 	return rawMessage !== undefined && rawMessage.indexOf('$GP') == 0 && rawMessage.indexOf('*') > 6;
 }
 
