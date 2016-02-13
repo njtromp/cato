@@ -1,7 +1,7 @@
 /**
  * This modules converts a speed in knots (nautical miles per hour) into the RPM the log-motor should have.
  * If the speed is less then the minimum value the log-motor will be turned off by returning 0. If the speed
- * is higher then the maximum the RPM value for the maximum is returned. Any other speed retults in a value
+ * is higher then the maximum the RPM value for the maximum is returned. Any other speed results in a value
  * that is a linear interpolation between the two closest values.
  */
 
@@ -14,7 +14,7 @@ function convertSpeed2RPM(speed) {
 	if (speed < calibration.limits.min) {
 		return 0;
 	}
-	// Keep withing limits
+	// Keep within limits
 	if (speed > calibration.limits.max) {
 		speed = calibration.limits.max;
 	}

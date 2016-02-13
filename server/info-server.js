@@ -72,7 +72,7 @@ InfoServer.prototype.startServer = function() {
         var parts = value.split('.');
         var degrees = Number(parts[0]);
         var minutes = Number('0.' + parts[1]) * 60.0;
-        return pad(padding, Math.abs(degrees)) + '°' + (minutes < 10 ? '0' : '') + minutes.toFixed(4) + rumbs.charAt(degrees >= 0 ? 0 : 1);
+        return pad(padding, Math.abs(degrees)) + '°' + pad('00', minutes) + minutes.toFixed(4) + rumbs.charAt(degrees >= 0 ? 0 : 1);
     }
 
     function pad(padding, value) {
