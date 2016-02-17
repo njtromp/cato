@@ -27,7 +27,7 @@
         "debug": false
     },
     "PowerSwitch": {
-        "switchPin": 23,
+        "switchPin": 27,
         "delayInMillis": 5000,
         "initialState": 1,
         "debug": false
