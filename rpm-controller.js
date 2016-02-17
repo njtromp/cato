@@ -96,7 +96,7 @@ RPMController.prototype.switchingToLowVoltage = function() {
     if (this.debug) {
         console.log('Increasing the offStep due to switching to low voltage mode.');
     }
-    this.offStep = Math.floor(this.offStep * this.voltageReductionFactor);
+    this.offStep = Math.Min(FULL_AHEAD, Math.floor(this.offStep * this.voltageReductionFactor));
     this.controlRPM();
 }
 
