@@ -1,40 +1,30 @@
-//$fn=30;
+$fn=30;
 
-// difference() {
-// 	cylinder(3, 10, 10);
-// 	cylinder(3, 3, 3);
-// }
-// translate([2, -3, 0]) {
-// 	cube([3, 6, 3]);
-// }
-
-// for(angle = [0: 60: 320]) {
-// 	rotate(angle) {
-// 		translate([8, -4, 0]) {
-// 			cube([10, 8, 3]);
-// 		}
-// 	}
-// }
-
-
-// translate(0, 0, 10) {
-// 	polyhedron(points=[[10,0,0],[20,0,0],[20,5,0],[10,2,0],[10,0,4],[20,0,4],[20,5,4],[10,2,4]], faces=[[0,1,2],[0,2,3],[4,5,6],[4,6,7],[0,1,5],[0,4,5],[1,2,5],[2,5,6],[2,3,6],[3,6,7],[0,3,4],[3,4,7]]);
-// }
-
-module pie_slice(ri=0.0,ro=3.0,a=15) {
+module pie_slice(h=2,ri=0.0,ro=3.0,a=15) {
 	$fn=64;
 	difference() {
 		intersection() {
-			circle(ro);
-			square(ro);
-	    	rotate(a-90) square(ro);
+			cylinder(h=h, r1=ro, r2=ro, center=true);
+			cube([ro,ro,h],false);
+	    	rotate(a-90) cube([ro,ro,h],false);
 		}
-      circle(r=ri);
+      cylinder(h=h, r1=ri, r2=ri);
 	}
 }
 
+// Create inner hole for axis
+difference() {
+	cylinder(3, 10, 10);
+	cylinder(3, 3, 3);
+}
+// Correct for nodge
+translate([2, -3, 0]) {
+	cube([3, 6, 3]);
+}
+
+// Place 'wings'
 for(angle = [0: 60: 320]) {
 	rotate(angle) {
-		pie_slice(ri=9,ro=20,a=30);
+		pie_slice(h=6,ri=9,ro=20,a=30);
 	}
 }
