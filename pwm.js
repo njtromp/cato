@@ -37,7 +37,7 @@ var constants = {
  *
  * @param: config has three properties.
  * - i2c: the I2C instance that takes care of the low-level communication.
- * - frequence: the frequency in HZ that the PCA9685 will be using. 
+ * - frequency: the frequency in HZ that the PCA9685 will be using. 
  * - debug: false/true which controls the logging at debug level.
  *
  * @param: startPWMControl is a function that is called after the PCA9685 board has been initialized
@@ -81,7 +81,7 @@ PWM.prototype.setChannelOffStep = function(channel, offStep) {
         if (this.debug) {
             console.log("Setting PWM channel:", channel, "offStep:", offStep);
         }
-        // Just to be on the safe side we set the on pulse as well
+        // Just to be on the safe side we set the 'on' pulse as well
         this._send(constants.channelOnStepLowByte + constants.registersPerChannel * channel, 0x00);
         this._send(constants.channelOnStepHighByte + constants.registersPerChannel * channel, 0x00);
         this._send(constants.channelOffStepLowByte + constants.registersPerChannel * channel, offStep & 0xFF);
@@ -99,7 +99,7 @@ PWM.prototype.switchChannelOn = function(channel) {
     checkChannel(channel);
     this._send(constants.channelOnStepLowByte + constants.registersPerChannel * channel, constants.fullAhead & 0xFF);
     this._send(constants.channelOnStepHighByte + constants.registersPerChannel * channel, constants.fullAhead >> 8);
-    // Just to be on the safe side we set the off pulse as well
+    // Just to be on the safe side we set the 'off' pulse as well
     this._send(constants.channelOffStepLowByte + constants.registersPerChannel * channel, 0x00);
     this._send(constants.channelOffStepHighByte + constants.registersPerChannel * channel, 0x00);
 }
@@ -112,7 +112,7 @@ PWM.prototype.switchChannelOff = function(channel) {
         console.log("Full stop channel:", channel);
     }
     checkChannel(channel);
-    // Just to be on the safe side we set the on pulse as well
+    // Just to be on the safe side we set the 'on' pulse as well
     this._send(constants.channelOnStepLowByte + constants.registersPerChannel * channel, 0x00);
     this._send(constants.channelOnStepHighByte + constants.registersPerChannel * channel, 0x00);
     this._send(constants.channelOffStepLowByte + constants.registersPerChannel * channel, constants.fullStop & 0xFF);
