@@ -57,12 +57,8 @@ RPMController.prototype.controlRPM = function() {
             }
             // Do a rough estimation for the new off-step
             var newOffStep = Math.floor(this.offStep * (this.targetRPM / currentRPM));
-            // Keep it real
-            if (newOffStep > FULL_AHEAD) {
-                newOffStep = FULL_AHEAD;
-            } else if (newOffStep < FULL_STOP) {
-                newOffStep = FULL_STOP;
-            }
+            // And keep it within range
+            newOffStep = Math.max(FULL_STOP, Math.min(FULL_AHEAD, newOffStep)); 
             // When running slowly, only do minor adjustments.
             if (currentRPM < this.adjustmentThreshold) {
                 newOffStep = limitChange(this.offStep, newOffStep, this.smallStepChange);
