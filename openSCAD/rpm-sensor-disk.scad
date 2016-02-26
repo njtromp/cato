@@ -1,32 +1,37 @@
 $fn=30;
 
-height=3;
+t=3; // thickness
+ar=3;   // axe radius
+or=20;  // outer radius
+ir=10;  // inner radius => wing length = or - ir
+ni=0.5; // nodge indent
+wc=6;   // wing count
 
-module pie_slice(h=2,ri=0.0,ro=3.0,a=15) {
+module pie_slice(h=1,ri=1,ro=1,a=60) {
 	$fn=64;
 	difference() {
 		intersection() {
-			cylinder(h=h, r1=ro, r2=ro, center=true);
-			cube([ro,ro,h],false);
-	    	rotate(a-90) cube([ro,ro,h],false);
+			cylinder(h=t, r1=ro, r2=ro, center=false);
+			cube([ro,ro,t],false);
+	    	rotate(a-90) cube([ro,ro,t],false);
 		}
-      cylinder(h=h, r1=ri, r2=ri);
+      cylinder(h=t, r1=ri, r2=ri, center=false);
 	}
 }
 
 // Create inner hole for axis
 difference() {
-	cylinder(height, 10, 10);
-	cylinder(height, 3, 3);
+	cylinder(t, ir, ir);
+	cylinder(t, ar, ar);
 }
 // Correct for nodge
-translate([2.5, -3, 0]) {
-	cube([3, 6, height]);
+translate([ar-ni, -ar, 0]) {
+	cube([ar, 2*ar, t]);
 }
 
 // Place 'wings'
-for(angle = [0: 60: 320]) {
+for(angle = [0: 360/wc : 359]) {
 	rotate(angle) {
-		pie_slice(h=2*height,ri=9,ro=20,a=30);
+		pie_slice(h=t,ri=ir-0.5,ro=or,a=180/wc);
 	}
 }
