@@ -1,43 +1,34 @@
-$fn=30;
 
-// thickness
-t=3;
-// axe radius
-ar=3;
-// outer radius
-or=20;
-// inner radius => wing length = outer radius - inner radius
-ir=10;
-// nodge indent  
-ni=0.5;
-// wing count
-wc=6;
-
-module pie_slice(h=1,ir=1,or=1,a=60) {
+module pie_slice(thickness,innerRadius,outerRadius,angle) {
 	$fn=64;
 	difference() {
 		intersection() {
-			cylinder(h=t, r1=or, r2=or, center=false);
-			cube([or,or,t],false);
-	    	rotate(a-90) cube([or,or,t],false);
+			cylinder(h=thickness, r=outerRadius, center=false);
+			cube([outerRadius,outerRadius,thickness],false);
+	    	rotate(angle-90) cube([outerRadius,outerRadius,thickness],false);
 		}
-      cylinder(h=t, r1=ir, r2=ir, center=false);
+      cylinder(h=thickness, r=innerRadius, center=false);
 	}
 }
 
-// Create hole for axis
-difference() {
-	cylinder(t, ir, ir);
-	cylinder(t, ar, ar);
-}
-// Correction for nodge
-translate([ar-ni, -ar, 0]) {
-	cube([ar, 2*ar, t]);
-}
+module rpm_disk(thickness,axeRadius,nodgeIndent,outerRadius,innerRadius,wingCount) {
+	$fn=30;
+	// Create hole for axis
+	difference() {
+		cylinder(thickness, r=innerRadius);
+		cylinder(thickness, r=axeRadius);
+	}
+	// CouterRadiusrection for nodge
+	translate([axeRadius-nodgeIndent, -axeRadius, 0]) {
+		cube([axeRadius, 2*axeRadius, thickness]);
+	}
 
-// Place 'wings'
-for(angle = [0: 360/wc : 359]) {
-	rotate(angle) {
-		pie_slice(h=t,ir=ir-0.5,or=or,a=180/wc);
+	// Place 'wings'
+	for(angle = [0: 360/wingCount : 359]) {
+		rotate(angle) {
+			pie_slice(thickness,innerRadius-0.5,outerRadius,180/wingCount);
+		}
 	}
 }
+
+rpm_disk(3,3,0.5,20,10,6);
