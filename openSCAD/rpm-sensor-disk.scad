@@ -1,30 +1,36 @@
 $fn=30;
 
-t=3; // thickness
-ar=3;   // axe radius
-or=20;  // outer radius
-ir=10;  // inner radius => wing length = or - ir
-ni=0.5; // nodge indent
-wc=6;   // wing count
+// thickness
+t=3;
+// axe radius
+ar=3;
+// outer radius
+or=20;
+// inner radius => wing length = outer radius - inner radius
+ir=10;
+// nodge indent  
+ni=0.5;
+// wing count
+wc=6;
 
-module pie_slice(h=1,ri=1,ro=1,a=60) {
+module pie_slice(h=1,ir=1,or=1,a=60) {
 	$fn=64;
 	difference() {
 		intersection() {
-			cylinder(h=t, r1=ro, r2=ro, center=false);
-			cube([ro,ro,t],false);
-	    	rotate(a-90) cube([ro,ro,t],false);
+			cylinder(h=t, r1=or, r2=or, center=false);
+			cube([or,or,t],false);
+	    	rotate(a-90) cube([or,or,t],false);
 		}
-      cylinder(h=t, r1=ri, r2=ri, center=false);
+      cylinder(h=t, r1=ir, r2=ir, center=false);
 	}
 }
 
-// Create inner hole for axis
+// Create hole for axis
 difference() {
 	cylinder(t, ir, ir);
 	cylinder(t, ar, ar);
 }
-// Correct for nodge
+// Correction for nodge
 translate([ar-ni, -ar, 0]) {
 	cube([ar, 2*ar, t]);
 }
@@ -32,6 +38,6 @@ translate([ar-ni, -ar, 0]) {
 // Place 'wings'
 for(angle = [0: 360/wc : 359]) {
 	rotate(angle) {
-		pie_slice(h=t,ri=ir-0.5,ro=or,a=180/wc);
+		pie_slice(h=t,ir=ir-0.5,or=or,a=180/wc);
 	}
 }
