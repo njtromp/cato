@@ -1,7 +1,11 @@
 # Configuring Raspberry PI
 
+# Use the RasPI config tool to enable I2C and serial support
+sudo raspi-config
+
 # Basicaaly I followed this tutorial
 # https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/install-software
+# https://learn.adafruit.com/adafruit-ultimate-gps-on-the-raspberry-pi/setting-everything-up
 
 # The next could be needed when starting the rasp-config tools complains about no language has been set
 cat << 'EOF' >> /etc/default/locale
@@ -83,12 +87,6 @@ sudo sh -c "iptables-save > /etc/network/iptables.forward.nat"
 cat << 'EOF' >> /etc/network/interfaces
 up iptables-resotre < /etc/network/iptables.forward.nat
 EOF
-
-# Assuming a fresh copy of Raspbian has been installed
-sudo apt-get update
-sudo apt-get upgrade
-# Use the RasPI config tool to enable I2C support
-sudo raspi-config
 
 # Install GPSD daemon and some tools
 sudo apt-get install gpsd gpsd-clients
