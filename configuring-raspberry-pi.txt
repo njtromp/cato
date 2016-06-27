@@ -1,15 +1,88 @@
 # Configuring Raspberry PI
 
+# Basicaaly I followed this tutorial
+# https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/install-software
 
 # The next could be needed when starting the rasp-config tools complains about no language has been set
-# They all need to be executed within a root shell e.g. sudo su -
-# export LANGUAGE=en_US.UTF-8
-# export LANG=en_US.UTF-8
-# export LC_ALL=en_US.UTF-8
-# locale-gen en_US.UTF-8
-# dpkg-reconfigure locales
+cat << 'EOF' >> /etc/default/locale
+LANG=en_US.UTF-8
+LANGUAGE=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+EOF
 
 # Here is the real installation :-)
+
+# Install dnsmasq
+sudo apt-get install dnsmasq
+
+#Configure DNS DHCP (dnsmasq)
+# Change or add to the bottom of the configuration fiel
+cat << 'EOF' >> /etc/dnsmasq.conf
+interface=eth0
+interface=wlan0
+no-hosts
+addn-hosts=/etc/hosts.dnsmasq
+dhcp-range=192.168.66.20,192.168.66.150,24h
+dhcp-range=192.168.99.20,192.168.99.150,24h
+dhcp-option=6,192.168.66.10
+dhcp-option=6,192.168.99.10
+EOF
+
+# Make the Raspberry PI known on two differen names
+cat << 'EOF' > /etc/hosts.dnsmasq
+192.168.66.10 cato
+192.168.99.10 cato-wired
+EOF
+
+# Install hostapd for Raspberry PI
+sudo apt-get install hostapd
+
+# Configure hostapd
+# Configure the access point
+cat << 'EOF' >> /etc/hostpad/hostapd.conf
+# Basic configuration
+interface=wlan0
+ssid=cato
+channel=6
+hw_mode=g
+country_code=NL
+
+# WPA and WPA2 configuration
+macaddr_acl=0
+ignore_broadcast_ssid=0
+wpa=2
+wpa_passphrase=<dat mag je niet weten!>
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=CCMP
+rsn_pairwise=CCMP
+EOF
+
+# Enable the accesspoint
+cat << 'EOF' >> /etc/default/hostapd
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+EOF
+
+# Enable forwarding in the kernel permanent
+# sudo vi /etc/sysctl.conf
+# Search near the end
+# net.ipv4.ip_forward=1
+
+# and for now
+sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
+
+# Configure the iptables
+sudo iptables -t nat -A POSTROUTING -o usb0 -j MASQUERADE 
+sudo iptables -A FORWARD -i usb0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i wlan0 -o usb0 -j ACCEPT
+sudo iptables -A FORWARD -i usb0 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i eth0 -o usb0 -j ACCEPT
+# Save the configuration
+sudo sh -c "iptables-save > /etc/network/iptables.forward.nat"
+
+# And activate the configuration after each reboot
+cat << 'EOF' >> /etc/network/interfaces
+up iptables-resotre < /etc/network/iptables.forward.nat
+EOF
 
 # Assuming a fresh copy of Raspbian has been installed
 sudo apt-get update
@@ -18,7 +91,7 @@ sudo apt-get upgrade
 sudo raspi-config
 
 # Here we go
-sudo apt-get install bluetooth bluez-utils blueman i2c-tools
+sudo apt-get install bluetooth bluez-utils blueman
 
 hcitool scan
 
@@ -37,18 +110,6 @@ rfcomm0 {
 }
 EOF
 
-# Activate I2C modules and configuration
-cat << 'EOF' >> /etc/modules
-i2c-bcm2708 
-i2c-dev
-EOF
-
-# Only if not present, so check first!
-cat << 'EOF' >> /boot/config.txt
-dtparam=i2c1=on
-dtparam=i2c_arm=on
-EOF
-
 # Connect to the device in order to enter the pincode
 bluez-simple-agent hci0 00:02:76:C8:24:79
 
@@ -64,11 +125,38 @@ gpsd -b -G -n /dev/rfcomm0
 # Check if everything is working properly (Optional)
 gpsmon /dev/rfcomm0
 
+# Enable i2c interface
+sudo apt-get install i2c-tools
+
+# Activate I2C modules and configuration
+cat << 'EOF' >> /etc/modules
+i2c-bcm2708 
+i2c-dev
+EOF
+
+# Only if not present, so check first!
+#cat << 'EOF' >> /boot/config.txt
+#dtparam=i2c1=on
+#dtparam=i2c_arm=on
+#EOF
+
 # Install nodejs
 curl -sLS https://apt.adafruit.com/add | sudo bash
 sudo apt-get install node
+# This gives a segfault :-(
+#curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+#sudo apt-get install nodejs
+
+# Tried but is not succesfull
+#sudo apt-get install python-smbus
+#sudo chmod o+rw /dev/i2c*
+#sudo apt-get install gcc-4.8 g++-4.8
+#sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
+#sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 40 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
+#sudo update-alternatives --config gcc 
+
 # Install used modules
-npm install node-gpsd onoff keypress i2c socket.io nmea-0183
+npm install node-gpsd onoff keypress i2c@0.2.1 socket.io nmea-0183
 
 # Copy all the JavaScript code, configurations files and scripts to the Raspberry PI
 scp *js pi@cato
@@ -76,29 +164,6 @@ scp *json pi@cato
 scp start-* pi@cato
 # and add the following line to the crontab -e
 @startup ........
-
-# Install dnsmasq
-sudo apt-get install dnsmasq
-
-#Configure DNS DHCP
-# TODO add configuration
-
-# Install hostapd for Raspberry PI
-# TODO decribe steps
-
-# Configure hostapd
-# TODO add configuration
-
-# Add the following line to /etc/hostpad/hostapd.conf
-cat << 'EOF' >> /etc/hostpad/hostapd.conf
-country_code=NL
-EOF
-
-cat << 'EOF' >> /etc/modprobe.d/8182cu.conf
-# Disable power saving
-#options 8192cu rtw_power_mgnt=0 rtw_enusbss=1 rtw_ips_mode=1
-options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
-EOF
 
 # Install Apache HTTPD
 sudo apt-get update
