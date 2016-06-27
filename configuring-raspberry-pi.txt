@@ -90,29 +90,6 @@ sudo apt-get upgrade
 # Use the RasPI config tool to enable I2C support
 sudo raspi-config
 
-# Here we go
-sudo apt-get install bluetooth bluez-utils blueman
-
-hcitool scan
-
-# Take note of the MAC-address and the name
-#   00:02:76:C8:24:79   Nokia LD-3W
-
-# Add a rfcomm entry for the GPS device to /etc/bluetooth/rfcomm.conf
-# Replacing with the correct MAC and name if needed.
-
-cat << 'EOF' >> /etc/bluetooth/rfcomm.conf
-rfcomm0 {
-        bind yes;
-        device 00:02:76:C8:24:79;
-        channel 1;
-        comment "Nokia LD-3W";
-}
-EOF
-
-# Connect to the device in order to enter the pincode
-bluez-simple-agent hci0 00:02:76:C8:24:79
-
 # Install GPSD daemon and some tools
 sudo apt-get install gpsd gpsd-clients
 
@@ -147,9 +124,13 @@ sudo apt-get install node
 #curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 #sudo apt-get install nodejs
 
-# Tried but is not succesfull
+# The next lines might not be needed but unable to verify at this moment
 #sudo apt-get install python-smbus
 #sudo chmod o+rw /dev/i2c*
+
+# The next lines might not be needed but unable to verify at this moment
+# Only needed when running 'gcc' results in a 'unknown program/command'
+# Version numbers might be different!
 #sudo apt-get install gcc-4.8 g++-4.8
 #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
 #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 40 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
@@ -166,7 +147,6 @@ scp start-* pi@cato
 @startup ........
 
 # Install Apache HTTPD
-sudo apt-get update
 sudo apt-get install apache2
 sudo a2enmod proxy
 sudo a2enmod proxy_http
