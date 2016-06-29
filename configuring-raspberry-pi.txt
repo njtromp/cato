@@ -91,14 +91,47 @@ EOF
 # Install GPSD daemon and some tools
 sudo apt-get install gpsd gpsd-clients
 
+# Remove 'console=ttyAMA0,115200' and 'kgdboc=ttyAMA0,115200' if present from /boot/cmdline.txt
+
+# Disable some serial services
+sudo systemctl mask serial-getty@ttyAMA0.service
+
+# Update gpsd configuration
+cat << 'EOF' > /etc/default/gpsd
+# Default settings for the gpsd init script and the hotplug wrapper.
+
+# Start the gpsd daemon automatically at boot time
+START_DAEMON="true"
+
+# Use USB hotplugging to add new USB devices automatically to the daemon
+USBAUTO="true"
+
+# Devices gpsd should collect to at boot time.
+# They need to be read/writeable, either by user gpsd or the group dialout.
+DEVICES="/dev/ttyAMA0"
+
+# Other options you want to pass to gpsd
+GPSD_OPTIONS="-n -G /dev/ttyAMA0"
+EOF
+
+# Create startup script for the gpsd service
+cat << 'EOF' > /home/pi/start-gpsd
+#!/bin/bash
+sudo service gpsd start
+EOF
+# make is executable
+chmod +x /home/pi/start-gpsd
+
+# Add the next line to the crontab config, 'sudo crontab -e'
+# @reboot /home/pi/start-gpsd
+
 # Start the GPSD daemon
-# -b read-only
 # -G listen on all interfaces
 # -n don't wait for clients to connect (start polling the GPS immediately)
-gpsd -b -G -n /dev/rfcomm0
+# gpsd -G -n /dev/ttyAMA0
 
 # Check if everything is working properly (Optional)
-gpsmon /dev/rfcomm0
+# gpsmon /dev/ttyAMA0
 
 # Enable i2c interface
 sudo apt-get install i2c-tools
@@ -135,14 +168,14 @@ sudo apt-get install node
 #sudo update-alternatives --config gcc 
 
 # Install used modules
-npm install node-gpsd onoff keypress i2c@0.2.1 socket.io nmea-0183
+npm install node-gpsd onoff keypress socket.io nmea-0183
+# Due to some error during building lets use a previous version
+npm install node-gpsd i2c@0.2.1
 
 # Copy all the JavaScript code, configurations files and scripts to the Raspberry PI
 scp *js pi@cato
 scp *json pi@cato
 scp start-* pi@cato
-# and add the following line to the crontab -e
-@startup ........
 
 # Install Apache HTTPD
 sudo apt-get install apache2
