@@ -96,7 +96,7 @@ function isPotentialNMEAMessage(rawMessage) {
 }
 
 function isRMCSentence(nmeaMessage) {
-	return nmeaMessage.valid == 'A' && nmeaMessage.id == 'GPRMC';
+	return nmeaMessage !==  null && nmeaMessage.valid == 'A' && nmeaMessage.id == 'GPRMC';
 }
 
 function speedAvailable(nmeaMessage) {
