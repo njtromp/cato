@@ -153,11 +153,6 @@ npm install node-gpsd onoff keypress socket.io nmea-0183
 # Due to some error during building lets use a previous version
 npm install i2c@0.2.1
 
-# Copy all the JavaScript code, configurations files and scripts to the Raspberry PI
-scp *js pi@cato
-scp *json pi@cato
-scp start-* pi@cato
-
 # Install Apache HTTPD
 sudo apt-get install apache2
 sudo a2enmod proxy
@@ -169,6 +164,13 @@ sudo a2enmod proxy_http
 #        ProxyPassReverse / http://cato:8080/
 # And restart Apache
 # sudo service apache2 restart
+
+# Add the following line to 'crontab -e'
+@reboot /home/pi/start-nodejs
+
+# Create (sym)links to 'start-gpsd' and 'start-nodejs' in the home folder.
+
+sudo reboot
 
 # RPM 299, 5V  => Offstep = 1900
 # RPM 301, 12V => Offstep = 565

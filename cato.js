@@ -3,10 +3,6 @@
  * all the modules and start them.
  */
 
-// Start correcting the clock.
-var correctClock = require('./correct-clock');
-correctClock.start();
-
 // Start the log-controller
 var Factory = require('./factory');
 var factory = new Factory();

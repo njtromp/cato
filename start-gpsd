@@ -1,22 +1,3 @@
 #!/bin/bash
+sudo /usr/sbin/gpsd -n -G -F /var/run/gpsd.sock /dev/ttyAMA0
 
-# Wait for the Bluetooth GPS device to be ready
-while [ ! -e /dev/rfcomm0 ]; do
-    sleep 1
-done
-sleep 2
-
-# Start the NTP service
-# TODO check if the is really needed
-#sudo service ntp start
-#sleep 2
-
-# Start the GPSD Daemon
-# -n read only mode
-# -b start polling immediately
-# -G listen on all interfaces
-/usr/sbin/gpsd -n -b -G /dev/rfcomm0 
-sleep 10
-
-# Start the rest of the system
-/home/pi/start-nodejs &
