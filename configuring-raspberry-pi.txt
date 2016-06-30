@@ -96,34 +96,15 @@ sudo apt-get install gpsd gpsd-clients
 # Disable some serial services
 sudo systemctl mask serial-getty@ttyAMA0.service
 
-# Update gpsd configuration
-cat << 'EOF' > /etc/default/gpsd
-# Default settings for the gpsd init script and the hotplug wrapper.
-
-# Start the gpsd daemon automatically at boot time
-START_DAEMON="true"
-
-# Use USB hotplugging to add new USB devices automatically to the daemon
-USBAUTO="true"
-
-# Devices gpsd should collect to at boot time.
-# They need to be read/writeable, either by user gpsd or the group dialout.
-DEVICES="/dev/ttyAMA0"
-
-# Other options you want to pass to gpsd
-GPSD_OPTIONS="-n -G /dev/ttyAMA0"
-EOF
-
 # Create startup script for the gpsd service
-cat << 'EOF' > /home/pi/start-gpsd
+cat << 'EOF' > start-gps
 #!/bin/bash
-sudo service gpsd start
+sudo /usr/sbin/gpsd -n -G -F /var/run/gpsd.sock /dev/ttyAMA0
 EOF
-# make is executable
-chmod +x /home/pi/start-gpsd
-
-# Add the next line to the crontab config, 'sudo crontab -e'
-# @reboot /home/pi/start-gpsd
+chmod +x start-gpsd
+ 
+# Addd the next line to 'crontab -e'
+@reboot /home/pi/start-gpsd
 
 # Start the GPSD daemon
 # -G listen on all interfaces
@@ -170,7 +151,7 @@ sudo apt-get install node
 # Install used modules
 npm install node-gpsd onoff keypress socket.io nmea-0183
 # Due to some error during building lets use a previous version
-npm install node-gpsd i2c@0.2.1
+npm install i2c@0.2.1
 
 # Copy all the JavaScript code, configurations files and scripts to the Raspberry PI
 scp *js pi@cato
