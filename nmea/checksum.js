@@ -1,6 +1,9 @@
 "use strict";
 
-module.exports = { calculateChecksum, hasChecksum, validateMessage, matchChecksum };
+module.exports = calculateChecksum;
+module.exports = hasChecksum;
+module.exports = validateMessage;
+module.exports = matchChecksum;
 
 function calculateChecksum(message) {
 	    // Start with the first character
