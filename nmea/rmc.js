@@ -4,17 +4,17 @@ module.exports = RMC;
 
 var NMEAMessage = require('./nmea-message');
 
-const RMC_TIME = 1;
-const RMC_STATUS = 2;
-const RMC_LATITUDE_DEGREES = 3;
-const RMC_LATITUDE_NS = 4;
-const RMC_LONGITUDE_DEGREES = 5;
-const RMC_LONGITUDE_EW = 6;
-const RMC_SOG_IN_KNOTS = 7;
-const RMC_COG = 8;
-const RMC_DATE = 9;
-const RMC_VARIATION_DEGREES = 10;
-const RMC_VARIATION_1 = 11;
+var RMC_TIME = 1;
+var RMC_STATUS = 2;
+var RMC_LATITUDE_DEGREES = 3;
+var RMC_LATITUDE_NS = 4;
+var RMC_LONGITUDE_DEGREES = 5;
+var RMC_LONGITUDE_EW = 6;
+var RMC_SOG_IN_KNOTS = 7;
+var RMC_COG = 8;
+var RMC_DATE = 9;
+var RMC_VARIATION_DEGREES = 10;
+var RMC_VARIATION_1 = 11;
 
 function RMC(rawMessage) {
 	NMEAMessage.call(this, rawMessage);
