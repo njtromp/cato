@@ -105,5 +105,5 @@ function hasMinimalNeededLength(rawMessage) {
  * @Returns <true> if the first character is a dollar-sign, <false> otherwise.
  */
 function startsWithDollar(rawMessage) {
-	return rawMessage.startsWith('$');
+	return rawMessage.charAt(0) === '$';
 }

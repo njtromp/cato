@@ -1,35 +1,42 @@
 "use strict";
 
-module.exports = calculateChecksum;
-module.exports = hasChecksum;
-module.exports = validateMessage;
-module.exports = matchChecksum;
-
-function calculateChecksum(message) {
-	    // Start with the first character
-    var checksum = 0;
-    // process rest of characters, zero delimited
-    for(var i = 0; i < message.length; ++i) {
-        checksum = checksum ^ message.charCodeAt(i);
-    }
-    return checksum & 0xff;
+exports.calculateChecksum = function(message) {
+	return _calculateChecksum(message);
 }
 
-function hasChecksum(rawMessage) {
-	return rawMessage.indexOf('*') == rawMessage.length - 3;
+exports.hasChecksum = function(rawMessage) {
+	return _hasChecksum(rawMessage);
 }
 
-function validateMessage(rawMessage) {
-	if (hasChecksum(rawMessage)) {
+exports.validateMessage = function(rawMessage) {
+	if (_hasChecksum(rawMessage)) {
 		var messageParts = rawMessage.split('*');
 		var messagePart = messageParts[0];
 		var checksumPart = messageParts[1];
-		return matchChecksum(messagePart, checksumPart);
+		return _matchChecksum(messagePart, checksumPart);
 	} else {
 		return false;
 	}
 }
 
-function matchChecksum(message, checksum) {
+exports.matchChecksum = function(message, checksum) {
     return calculateChecksum(message) === parseInt(checksum, 16);
+}
+
+function _calculateChecksum(message) {
+	// Start with the first character
+	var checksum = 0;
+	// process rest of characters, zero delimited
+	for(var i = 0; i < message.length; ++i) {
+	    checksum = checksum ^ message.charCodeAt(i);
+	}
+	return checksum & 0xff;
+}
+
+function _hasChecksum(rawMessage) {
+	return rawMessage.indexOf('*') == (rawMessage.length - 3);
+}
+
+function _matchChecksum(message, checksum) {
+    return _calculateChecksum(message) === parseInt(checksum, 16);
 }
