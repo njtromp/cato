@@ -14,7 +14,7 @@ var RMC_SOG_IN_KNOTS = 7;
 var RMC_COG = 8;
 var RMC_DATE = 9;
 var RMC_VARIATION_DEGREES = 10;
-var RMC_VARIATION_1 = 11;
+var RMC_VARIATION_EW = 11;
 
 function RMC(rawMessage) {
 	NMEAMessage.call(this, rawMessage);
@@ -23,6 +23,10 @@ function RMC(rawMessage) {
 	}
 }
 RMC.prototype = Object.create(NMEAMessage.prototype);
+
+RMC.prototype.getStatus = function() {
+	return this.getElement(RMC_STATUS, 'string');
+}
 
 RMC.prototype.getTimestamp = function(returnType) {
 	return this.getElement(RMC_TIME, returnType);
@@ -33,7 +37,7 @@ RMC.prototype.getLatitude = function(returnType) {
 	var ns = this.getElement(RMC_LATITUDE_NS, 'string');
 	if (returnType ===  'double') {
 		var sign = ns === 'N' ? 1.0 : -1.0;
-		return sign * (latitude / 100.0);
+		return sign * Math.floor(latitude / 100.0) + (latitude % 100) / 60.0;
 	} else {
 		return insertDegreeSign(latitude) + ns;
 	}
@@ -44,9 +48,28 @@ RMC.prototype.getLongitude = function(returnType) {
 	var ew = this.getElement(RMC_LONGITUDE_EW, 'string');
 	if (returnType ===  'double') {
 		var sign = ew === 'E' ? 1.0 : -1.0;
-		return sign * (longitude / 100.0);
+		return sign * Math.floor(longitude / 100.0) + (longitude % 100) / 60.0;
 	} else {
 		return insertDegreeSign(longitude) + ew;
+	}
+}
+
+RMC.prototype.getSOG = function(returnType) {
+	return this.getElement(RMC_SOG_IN_KNOTS, returnType);
+}
+
+RMC.prototype.getCOG = function(returnType) {
+	return this.getElement(RMC_COG, returnType);
+}
+
+RMC.prototype.getVariation = function(returnType) {
+	var variation = this.getElement(RMC_VARIATION_DEGREES, returnType);
+	var ew = this.getElement(RMC_VARIATION_EW, 'string');
+	if (returnType ===  'double') {
+		var sign = ew === 'E' ? 1.0 : -1.0;
+		return sign * variation;
+	} else {
+		return variation + ew;
 	}
 }
 
