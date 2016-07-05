@@ -3,6 +3,7 @@
 (function NMEAMessageTets() {
  	var assert = require('assert');
  	var RMC = require('../nmea/rmc');
+ 	var DateHelper = require('../util/date-helper');
 
  	try {
 	 	console.log('\nTesting RMC message');
@@ -14,7 +15,9 @@
 
 	 	assert.strictEqual(message.getSourceID(), 'GP', 'Source ID');
 	 	assert.strictEqual(message.getMessageID(), 'RMC', 'Message ID');
-	 	assert.strictEqual(message.getTimestamp('string'), '123519', 'Timestamp');
+	 	assert.strictEqual(message.getTimestamp('string'), '230394123519', 'Timestamp');
+	 	var messageDate = DateHelper.constructDate(1994, 3, 23, 12, 35, 19);
+	 	assert.deepEqual(message.getTimestamp('date'), messageDate, 'Timestamp');
 	 	assert.strictEqual(message.getStatus(), 'A', 'Status');
 	 	
 	 	assert.strictEqual(message.getLatitude('double'), 48.11729999999999, 'Latitude');
@@ -34,7 +37,7 @@
 
 	 	console.log('Testing RMC message have been succesful!');
 	} catch (err) {
-		console.log("Testing RMC message failed!");
-		console.log(err);
+		console.error("Testing RMC message failed!");
+		console.error(err);
 	}
 })();

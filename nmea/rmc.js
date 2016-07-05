@@ -3,6 +3,7 @@
 module.exports = RMC;
 
 var NMEAMessage = require('./nmea-message');
+var DateHelper = require('../util/date-helper');
 
 var RMC_TIME = 1;
 var RMC_STATUS = 2;
@@ -29,7 +30,13 @@ RMC.prototype.getStatus = function() {
 }
 
 RMC.prototype.getTimestamp = function(returnType) {
-	return this.getElement(RMC_TIME, returnType);
+	var datePart = this.getElement(RMC_DATE, 'string');
+	var timePart = this.getElement(RMC_TIME, 'string');
+	if (returnType === 'date') {
+		return DateHelper.constructDate(datePart, timePart);
+	} else {
+		return datePart + timePart;
+	}
 }
 
 RMC.prototype.getLatitude = function(returnType) {
