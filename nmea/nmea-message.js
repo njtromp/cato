@@ -27,6 +27,7 @@ function NMEAMessage(rawMessage) {
 	this.rawMessage = rawMessage;
 	this.messageParts = rawMessage.split(',');
 	if (this.hasChecksum()) {
+		// Remove checksum from the last element
 		this.messageParts[this.messageParts.length - 1] = this.messageParts[this.messageParts.length - 1].split('*')[0];
 	}
 }
@@ -77,7 +78,7 @@ NMEAMessage.prototype.getRawMessage = function() {
  */
 NMEAMessage.prototype.getElement = function(elementID, returnType) {
 	if (elementID < 1 || elementID >= this.messageParts.length) {
-		throw {type: "IndexOutOfBounds", message: "The element id [${elementID}] is not withing the allowed  (1, ${(this.messageParts.length - 1)})range!"}
+		throw {type: "IndexOutOfBounds", message: "The element id [" + elementID + "] is not within the allowed  (1, " + (this.messageParts.length - 1) + ")range!"}
 	}
 	switch (returnType) {
 		case 'string' :
@@ -87,7 +88,7 @@ NMEAMessage.prototype.getElement = function(elementID, returnType) {
 		case 'double' :
 			return Number(this.messageParts[elementID]);
 		default :
-			throw {type: "IllegalArgurment", message: "Unknown returntype [${returnType}]!"};
+			throw {type: "IllegalArgurment", message: "Unknown returntype [" + returnType + "]!"};
 	}
 }
 
