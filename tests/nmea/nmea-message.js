@@ -2,7 +2,7 @@
 
 (function NMEAMessageTets() {
 	var assert = require('assert');
-	var NMEAMessage = require('../nmea/nmea-message');
+	var NMEAMessage = require('../../nmea/nmea-message');
 
 	try {
 		console.log('\nTesting NMEA message');
@@ -18,6 +18,14 @@
 		assert.strictEqual(message.getElement(12, 'string'), 'M');
 		assert.strictEqual(message.getElement(13, 'string'), '');
 		assert.strictEqual(message.getElement(14, 'string'), '');
+		
+		try {
+			message.getElement(100, 'string');
+		} catch (err) {
+			if (!(err.hasOwnProperty('type') && err.type === 'IndexOutOfBounds')) {
+				throw err;
+			}
+		}
 
 		console.log('Testing NMEA message have been succesful!');
 	} catch (err) {

@@ -4,7 +4,7 @@
  * The constructor does some basic validation, based on the parameter type and value.
  * When something goes wrong a JSON object is throw containing at least two attributes.
  * A 'type' attribute of type string which indicates what kind of error it is. And a 'message'
- * attribute of type string which holds more specific onformation on the error.
+ * attribute of type string which holds more specific information on the error.
  */
 
 "use strict";
@@ -41,8 +41,8 @@ NMEAMessage.prototype.hasChecksum = function() {
 }
 
 /**
- * Determines if the message is valid e.g. if a checksum is present the message matches
- * the checksum.
+ * Determines if the message is valid e.g. if a checksum is present and if that matches
+ * the message.
  */
 NMEAMessage.prototype.isValid = function() {
 	if (this.hasChecksum() && startsWithDollar(this.rawMessage)) {
@@ -78,7 +78,7 @@ NMEAMessage.prototype.getRawMessage = function() {
  */
 NMEAMessage.prototype.getElement = function(elementID, returnType) {
 	if (elementID < 1 || elementID >= this.messageParts.length) {
-		throw {type: "IndexOutOfBounds", message: "The element id [" + elementID + "] is not within the allowed  (1, " + (this.messageParts.length - 1) + ")range!"}
+		throw {type: "IndexOutOfBounds", message: "The element id [" + elementID + "] is not within the allowed range (1, " + (this.messageParts.length - 1) + ")!"};
 	}
 	switch (returnType) {
 		case 'string' :

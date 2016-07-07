@@ -11,7 +11,7 @@ var RMC_LATITUDE_DEGREES = 3;
 var RMC_LATITUDE_NS = 4;
 var RMC_LONGITUDE_DEGREES = 5;
 var RMC_LONGITUDE_EW = 6;
-var RMC_SOG_IN_KNOTS = 7;
+var RMC_SOG = 7;
 var RMC_COG = 8;
 var RMC_DATE = 9;
 var RMC_VARIATION_DEGREES = 10;
@@ -62,7 +62,7 @@ RMC.prototype.getLongitude = function(returnType) {
 }
 
 RMC.prototype.getSOG = function(returnType) {
-	return this.getElement(RMC_SOG_IN_KNOTS, returnType);
+	return this.getElement(RMC_SOG, returnType);
 }
 
 RMC.prototype.getCOG = function(returnType) {

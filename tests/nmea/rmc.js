@@ -2,8 +2,8 @@
 
 (function NMEAMessageTets() {
  	var assert = require('assert');
- 	var RMC = require('../nmea/rmc');
- 	var DateHelper = require('../util/date-helper');
+ 	var RMC = require('../../nmea/rmc');
+ 	var DateHelper = require('../../util/date-helper');
 
  	try {
 	 	console.log('\nTesting RMC message');
