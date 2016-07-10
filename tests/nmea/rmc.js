@@ -37,7 +37,8 @@
 
 	 	console.log('Testing RMC message have been succesful!');
 	} catch (err) {
+		console.log(err);
 		console.error("Testing RMC message failed!");
-		console.error(err);
+		console.log('-----------------------------------------------------');
 	}
 })();

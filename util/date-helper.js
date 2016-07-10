@@ -6,10 +6,12 @@ exports.constructDate = function(year, month, day, hours, minutes, seconds) {
 		var timePart = arguments[1];
 		var yearPart = datePart.substring(4);
 		var epoch = new Date().getFullYear() % 100;
-		year = year > epoch ? '19' + yearPart : '20' + yearPart;		
+		year = yearPart > epoch ? '19' + yearPart : '20' + yearPart;		
 		return _constructDate(year, datePart.substring(2,4), datePart.substring(0, 2), timePart.substring(0, 2), timePart.substring(2, 4), timePart.substring(4));
 	} else if (arguments.length === 6) {		
 		return _constructDate(year, month, day, hours, minutes, seconds);
+	} else {
+		console.log('oeps....');
 	}
 }
 

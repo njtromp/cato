@@ -4,3 +4,4 @@
  */
 require('./nmea/nmea-message');
 require('./nmea/rmc');
+require('./nmea/zda');

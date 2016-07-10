@@ -29,7 +29,8 @@
 
 		console.log('Testing NMEA message have been succesful!');
 	} catch (err) {
-		console.log("Testing NMEA message failed!");
 		console.log(err);
+		console.log("Testing NMEA message failed!");
+		console.log('-----------------------------------------------------');
 	}
 })();
