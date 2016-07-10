@@ -14,9 +14,11 @@ var GGA_QUALITY = 6;
 var GGA_TRACKED_SATALLITES = 7;
 var GGA_HORIZONTAL_DILLUSION = 8;
 var GGA_ALTITUDE = 9;
-var GGA_HEIGTH_GEOID = 10;
-var GGA_TIME_SINCE_DPGS_UPDATE = 11;
-var GGA_DGPS_STATION_ID = 12;
+var GGA_ALTITUDE_UNIT = 10;
+var GGA_HEIGTH_GEOID = 11;
+var GGA_HEIGTH_GEOID_UNIT = 12;
+var GGA_TIME_SINCE_DPGS_UPDATE = 13;
+var GGA_DGPS_STATION_ID = 14;
 
 function GGA(rawMessage) {
 	NMEAMessage.call(this, rawMessage);
@@ -66,6 +68,18 @@ GGA.prototype.getHorizontalDillusion = function(returnType) {
 
 GGA.prototype.getAltitude = function(returnType) {
 	return this.getElement(GGA_ALTITUDE, returnType);
+}
+
+GGA.prototype.getAltitudeUnit = function() {
+	return this.getElement(GGA_ALTITUDE_UNIT, 'string');
+}
+
+GGA.prototype.getHeigthGeoid = function(returnType) {
+	return this.getElement(GGA_HEIGTH_GEOID, returnType);
+}
+
+GGA.prototype.getHeigthGeoidUnit = function() {
+	return this.getElement(GGA_HEIGTH_GEOID_UNIT, 'string');
 }
 
 function insertDegreeSign(value) {

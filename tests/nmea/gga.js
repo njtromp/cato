@@ -27,6 +27,12 @@
 	 	assert.strictEqual(message.getTrackedSatallites('int'), 8, 'Tracked Satallites');
 	 	assert.strictEqual(message.getHorizontalDillusion('double'), 0.9, 'Horizontal dillusion');
 
+	 	assert.strictEqual(message.getAltitude('double'), 545.4, 'Altitude');
+	 	assert.strictEqual(message.getAltitudeUnit(), 'M', 'Altitude unit');
+
+	 	assert.strictEqual(message.getHeigthGeoid('double'), 46.9, 'Heigth GEOID');
+	 	assert.strictEqual(message.getHeigthGeoidUnit(), 'M', 'Heigth GEOID unit');
+
 	 	console.log('Testing GGA message have been succesful!');
 	} catch (err) {
 		console.log(err);
