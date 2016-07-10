@@ -1,12 +1,13 @@
 "use strict";
 
-(function ZDATests() {
+(function ZDAMessaggeTests() {
+	var testName = 'ZDA message';
 	var assert = require('assert');
 	var ZDA = require('../../nmea/zda');
  	var DateHelper = require('../../util/date-helper');
 	
 	try {
-	 	console.log('\nTesting ZDA message');
+	 	console.log('\nTesting ' +  testName);
 	 	
 	 	var message = new ZDA('$GPZDA,201530.00,04,07,2002,00,00*60');
 	 	
@@ -21,10 +22,10 @@
 	 	assert.strictEqual(message.getTimezoneHours('int'), 0, 'Timezone hours');
 	 	assert.strictEqual(message.getTimezoneMinutes('int'), 0, 'Timezone minutes');
 		
-	 	console.log('Testing ZDA message have been succesful!');
+	 	console.log('Testing ' +  testName + ' have been succesful!');
 	} catch (err) {
 		console.log(err);
-		console.error("Testing ZDA message failed!");
+		console.error('Testing ' +  testName + ' failed!');
 		console.log('-----------------------------------------------------');
 	}
 })()

@@ -1,12 +1,13 @@
 "use strict";
 
-(function NMEAMessageTets() {
+(function RMCMessageTets() {
+	var testName = 'RMC message';
  	var assert = require('assert');
  	var RMC = require('../../nmea/rmc');
  	var DateHelper = require('../../util/date-helper');
 
  	try {
-	 	console.log('\nTesting RMC message');
+	 	console.log('\nTesting ' +  testName);
 	 	
 	 	var message = new RMC('$GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A');
 	 	
@@ -35,10 +36,10 @@
 	 	assert.strictEqual(message.getVariation('string'), '003.1W', 'Variation');
 	 	assert.strictEqual(message.getVariation('double'), -3.1, 'Variation');
 
-	 	console.log('Testing RMC message have been succesful!');
+	 	console.log('Testing ' +  testName + ' have been succesful!');
 	} catch (err) {
 		console.log(err);
-		console.error("Testing RMC message failed!");
+		console.error('Testing ' +  testName + ' message failed!');
 		console.log('-----------------------------------------------------');
 	}
 })();

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-/**
- * New node file
- */
-require('./nmea/nmea-message');
-require('./nmea/rmc');
-require('./nmea/zda');
-require('./nmea/gga');
+
+"use strict";
+
+require('./nmea/checksum-test');
+require('./nmea/nmea-message-test');
+require('./nmea/rmc-test');
+require('./nmea/zda-test');
+require('./nmea/gga-test');

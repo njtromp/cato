@@ -1,12 +1,13 @@
 "use strict";
 
-(function NMEAMessageTets() {
+(function GGAMessageTets() {
+	var testName = 'GGA message';
  	var assert = require('assert');
  	var GGA = require('../../nmea/gga');
  	var DateHelper = require('../../util/date-helper');
 
  	try {
-	 	console.log('\nTesting GGA message');
+	 	console.log('\nTesting ' +  testName);
 	 	
 	 	var message = new GGA('$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47');
 	 	
@@ -33,10 +34,10 @@
 	 	assert.strictEqual(message.getHeigthGeoid('double'), 46.9, 'Heigth GEOID');
 	 	assert.strictEqual(message.getHeigthGeoidUnit(), 'M', 'Heigth GEOID unit');
 
-	 	console.log('Testing GGA message have been succesful!');
+	 	console.log('Testing ' +  testName + ' have been succesful!');
 	} catch (err) {
 		console.log(err);
-		console.error("Testing GGA message failed!");
+		console.error('Testing ' +  testName + ' failed!');
 		console.log('-----------------------------------------------------');
 	}
 })();

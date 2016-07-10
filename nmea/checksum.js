@@ -1,11 +1,11 @@
 "use strict";
 
-exports.calculateChecksum = function(message) {
-	return _calculateChecksum(message);
-}
-
 exports.hasChecksum = function(rawMessage) {
 	return _hasChecksum(rawMessage);
+}
+
+exports.calculateChecksum = function(message) {
+	return _calculateChecksum(message);
 }
 
 exports.validateMessage = function(rawMessage) {
@@ -19,8 +19,8 @@ exports.validateMessage = function(rawMessage) {
 	}
 }
 
-exports.matchChecksum = function(message, checksum) {
-    return calculateChecksum(message) === parseInt(checksum, 16);
+function _hasChecksum(rawMessage) {
+	return rawMessage.indexOf('*') == (rawMessage.length - 3);
 }
 
 function _calculateChecksum(message) {
@@ -31,10 +31,6 @@ function _calculateChecksum(message) {
 	    checksum = checksum ^ message.charCodeAt(i);
 	}
 	return checksum & 0xff;
-}
-
-function _hasChecksum(rawMessage) {
-	return rawMessage.indexOf('*') == (rawMessage.length - 3);
 }
 
 function _matchChecksum(message, checksum) {

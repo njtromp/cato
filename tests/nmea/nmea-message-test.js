@@ -1,11 +1,12 @@
 "use strict";
 
 (function NMEAMessageTets() {
+	var testName = 'NMEA message';
 	var assert = require('assert');
 	var NMEAMessage = require('../../nmea/nmea-message');
 
 	try {
-		console.log('\nTesting NMEA message');
+		console.log('\nTesting ' +  testName);
 
 		var message = new NMEAMessage('$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47');
 		
@@ -27,10 +28,10 @@
 			}
 		}
 
-		console.log('Testing NMEA message have been succesful!');
+		console.log('Testing ' +  testName + ' have been succesful!');
 	} catch (err) {
 		console.log(err);
-		console.log("Testing NMEA message failed!");
+		console.log('Testing ' +  testName + ' failed!');
 		console.log('-----------------------------------------------------');
 	}
 })();
