@@ -7,7 +7,7 @@ module pie_slice(thickness,innerRadius,outerRadius,angle) {
 			cube([outerRadius,outerRadius,thickness],false);
 	    	rotate(angle-90) cube([outerRadius,outerRadius,thickness],false);
 		}
-      cylinder(h=thickness, r=innerRadius, center=false);
+    	cylinder(h=thickness, r=innerRadius, center=false);
 	}
 }
 
@@ -18,7 +18,7 @@ module rpm_disk(thickness,axeRadius,nodgeIndent,outerRadius,innerRadius,wingCoun
 		cylinder(thickness, r=innerRadius);
 		cylinder(thickness, r=axeRadius);
 	}
-	// CouterRadiusrection for nodge
+	// Correction for nodge
 	translate([axeRadius-nodgeIndent, -axeRadius, 0]) {
 		cube([axeRadius, 2*axeRadius, thickness]);
 	}
