@@ -20,7 +20,7 @@ var RMC_VARIATION_EW = 11;
 function RMC(rawMessage) {
 	NMEAMessage.call(this, rawMessage);
 	if (NMEAMessage.prototype.getMessageID.call(this) !== 'RMC') {
-		throw {type: "IllegalArgument", message: "The message ID [" + this.getMessageID() + "] is incompatable for RMC message!"};
+		throw new TypeError("The message ID [" + this.getMessageID() + "] is incompatable for RMC message!");
 	}
 }
 RMC.prototype = Object.create(NMEAMessage.prototype);

@@ -11,7 +11,7 @@ exports.constructDate = function(year, month, day, hours, minutes, seconds) {
 	} else if (arguments.length === 6) {		
 		return _constructDate(year, month, day, hours, minutes, seconds);
 	} else {
-		throw {type: 'IllegalArgument', message: 'Too ' + (arguments.length < 6 ? 'few' : 'many') + ' arguments.'};
+		throw new RangeError('Too ' + (arguments.length < 6 ? 'few' : 'many') + ' arguments.');
 	}
 }
 

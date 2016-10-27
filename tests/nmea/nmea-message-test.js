@@ -23,12 +23,12 @@
 		try {
 			message.getElement(100, 'string');
 		} catch (err) {
-			if (!(err.hasOwnProperty('type') && err.type === 'IndexOutOfBounds')) {
+			if (err.name !== 'RangeError' || err.message.indexOf('[100]') < 0) {
 				throw err;
 			}
 		}
 
-		console.log('Testing ' +  testName + ' have been succesful!');
+		console.log('Testing ' +  testName + ' has been succesful!');
 	} catch (err) {
 		console.log(err);
 		console.log('Testing ' +  testName + ' failed!');

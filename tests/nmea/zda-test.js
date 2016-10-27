@@ -22,7 +22,7 @@
 	 	assert.strictEqual(message.getTimezoneHours('int'), 0, 'Timezone hours');
 	 	assert.strictEqual(message.getTimezoneMinutes('int'), 0, 'Timezone minutes');
 		
-	 	console.log('Testing ' +  testName + ' have been succesful!');
+	 	console.log('Testing ' +  testName + ' has been succesful!');
 	} catch (err) {
 		console.log(err);
 		console.error('Testing ' +  testName + ' failed!');

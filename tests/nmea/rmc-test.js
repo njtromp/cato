@@ -36,7 +36,7 @@
 	 	assert.strictEqual(message.getVariation('string'), '003.1W', 'Variation');
 	 	assert.strictEqual(message.getVariation('double'), -3.1, 'Variation');
 
-	 	console.log('Testing ' +  testName + ' have been succesful!');
+	 	console.log('Testing ' +  testName + ' has been succesful!');
 	} catch (err) {
 		console.log(err);
 		console.error('Testing ' +  testName + ' message failed!');

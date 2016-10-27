@@ -15,7 +15,7 @@ var ZDA_TIMEZONE_MINUTES = 6;
 function ZDA(rawMessage) {
 	NMEAMessage.call(this, rawMessage);
 	if (NMEAMessage.prototype.getMessageID.call(this) !== 'ZDA') {
-		throw {type: "IllegalArgument", message: "The message ID [" + this.getMessageID() + "] is incompatable for ZDA message!"};
+		throw new TypeError("The message ID [" + this.getMessageID() + "] is incompatable for ZDA message!");
 	}
 }
 ZDA.prototype = Object.create(NMEAMessage.prototype);

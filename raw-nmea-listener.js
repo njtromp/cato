@@ -6,12 +6,15 @@
 
 var GPSD = require('node-gpsd');
 var nmeaParser = require('nmea-0183');
+var fs = require('fs');
 
 function RawNMEAListener(config, logController) {
 	this.debug = config.debug;
 	this.mockSpeed = config.mockSpeed;
 	this.mockInterval = config.mockInterval;
 	this.unstableFixMonitor = null;
+	this.nmeaMessages = [];
+	this.nmeaFile = null;
 
 	this.gpsdListener = new GPSD.Listener({
 	    port: config.port,
@@ -22,6 +25,10 @@ function RawNMEAListener(config, logController) {
 	var _this = this;
 	this.gpsdListener.connect(function() {
 	    console.log('Connected to GPSD server (listening for NMEA messages)');
+	    fs.open('~/cato-nmea.json', 'a', function(err, fd) {
+	    	if (err) throw err;
+	    	_this.nmeaFile = fd;
+	    });
 		_this.gpsdListener.watch({class: 'WATCH', nmea: true});
 	});
 	this.gpsdListener.on('raw', function(nmeaMessage) {
@@ -40,6 +47,15 @@ RawNMEAListener.prototype.setCallback = function(callback) {
 RawNMEAListener.prototype.processNMEAMessage = function(rawMessage) {
 	if (this.debug) {
 		console.log('Pure NMEA: ' + rawMessage);
+	}
+	this.nmeaMessages.push(rawMessage);
+	if (this.nmeaFile !== null) {
+		var nmeaMessages = this.nmeaMessages;
+		this.nmeaMessages = [];
+		var _this = this;
+		nmeaMessages.forEach(function (nmeaMessage) {
+			fs.write(_this.nmeaFile, nmeaMessage);
+		});
 	}
 	if (isPotentialNMEAMessage(rawMessage)) {
 		var nmeaMessage = nmeaParser.parse(rawMessage);
