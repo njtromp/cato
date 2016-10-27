@@ -4644,7 +4644,7 @@ Siemens, Hewlett-Packard, Texas Instuments, Sharp, Motorola&lt;p&gt;
 <part name="R4" library="resistor" deviceset="R-EU_" device="0207/12" value="1K"/>
 <part name="P-1" library="supply1" deviceset="V-" device=""/>
 <part name="OK2" library="optocoupler" deviceset="CNY17F" device=""/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="0207/12" value="1K"/>
+<part name="R5" library="resistor" deviceset="R-EU_" device="0207/12" value="330"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="0207/12" value="10K"/>
 <part name="R7" library="resistor" deviceset="R-EU_" device="0207/12" value="10K"/>
 <part name="D5" library="diode" deviceset="1N4004" device=""/>
